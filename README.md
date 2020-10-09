@@ -20,7 +20,7 @@ Router matches HTTP method and URI with a Route, a Route has a View.
 Routers included in the framework
 
 * SimpleRouter - simple string matching against uri
-* FastRouteRouter - uses FastRoute for Routing
+* FastRouteRouter - uses FastRoute for routing
 
 ### ViewFactory
 
@@ -29,7 +29,7 @@ To instantiate a View class the Router uses a View factory
 View factories included in the framework
 
 * DefaultViewFactory - instantiates the View without any constructor arguments
-* BeroViewFactory - uses Bero dependency injector to instantiate Views
+* BeroViewFactory - uses [Bero](https://github.com/paketphp/bero) dependency injector to instantiate Views
 
 ### View
 
@@ -63,8 +63,8 @@ View handlers included in the framework
 Fram glues all these parts together
 
 * executes the Router to get a Route
-* Matches the Route's View with registered View handlers
-* executes matched View handler with View 
+* matches the Route's View with registered View handlers
+* executes matched View handler with Route
 
 ## Error handling
 
@@ -73,4 +73,4 @@ of the framework.
 
 ## Examples
 
-Look into `/examples` 
+See `/examples`
