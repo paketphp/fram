@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace Paket\Fram\Examples\Simple;
 
+use Paket\Fram\Router\Route;
 use Paket\Fram\View\HtmlView;
 
 final class IndexView implements HtmlView
 {
-    public function render(): void
+    public function render(Route $route): void
     {
         ?>
         <html>

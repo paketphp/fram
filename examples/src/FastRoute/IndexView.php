@@ -1,22 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace Paket\Fram\Examples\Common;
+namespace Paket\Fram\Examples\FastRoute;
 
 use Paket\Fram\Router\Route;
 use Paket\Fram\View\HtmlView;
 
-class View404 implements HtmlView
+final class IndexView implements HtmlView
 {
     public function render(Route $route): void
     {
         ?>
         <html>
         <head>
-            <title>404 - Error</title>
+            <title>FastRoute</title>
         </head>
         <body>
-        <h1>404 - Error</h1>
+        <h1>Welcome to FastRoute example</h1>
         </body>
         </html>
         <?php

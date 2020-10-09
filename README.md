@@ -15,11 +15,12 @@ Each part of Fram is designed to be as simple as possible, it should be easy cha
 
 ### Router
 
-Router matches HTTP method and URI with a View.
+Router matches HTTP method and URI with a Route, a Route has a View.
 
 Routers included in the framework
 
-* SimpleRouter - simple string matching to a View class.
+* SimpleRouter - simple string matching against uri
+* FastRouteRouter - uses FastRoute for Routing
 
 ### ViewFactory
 
@@ -45,7 +46,7 @@ All view types implements an empty View interface.
 
 By using different view types the framework can adapt its execution per view type. Any number of View interfaces can be created by the project for different scenarios.
 
-How the View is rendered, the method name and it's parameters, is decided per view type, thus different view types can provide different input, like request and response objects.
+How the View is rendered, the method name and it's parameters, is decided per view type, thus different view types can provide different input, e.g. like request and response objects.
 
 ### ViewHandler
 
@@ -61,8 +62,8 @@ View handlers included in the framework
 
 Fram glues all these parts together
 
-* executes the router to get a View
-* Matches View with registered View handlers
+* executes the Router to get a Route
+* Matches the Route's View with registered View handlers
 * executes matched View handler with View 
 
 ## Error handling
@@ -73,11 +74,3 @@ of the framework.
 ## Examples
 
 Look into `/examples` 
-
-
-
- 
-
-
- 
-

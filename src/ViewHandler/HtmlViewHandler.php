@@ -3,16 +3,17 @@ declare(strict_types=1);
 
 namespace Paket\Fram\ViewHandler;
 
+use Paket\Fram\Router\Route;
 use Paket\Fram\View\HtmlView;
-use Paket\Fram\View\View;
 
 final class HtmlViewHandler implements ViewHandler
 {
-    public function handle(View $view): void
+    public function handle(Route $route): void
     {
         header('Content-Type: text/html');
         /** @var $view HtmlView */
-        $view->render();
+        $view = $route->getView();
+        $view->render($route);
     }
 
     public function getViewClass(): string

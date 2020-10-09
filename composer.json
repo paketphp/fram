@@ -8,7 +8,8 @@
     "php": ">=7.2"
   },
   "suggest": {
-    "paket/bero": "For BeroViewFactory"
+    "paket/bero": "For BeroViewFactory",
+    "nikic/fast-route": "For FastRouteRouter"
   },
   "autoload": {
     "psr-4": {

@@ -22,16 +22,15 @@ final class SimpleRouter implements Router
         $this->viewFactory = $viewFactory;
     }
 
-    public function route(string $method, string $uri): View
+    public function route(string $method, string $uri): Route
     {
-        if (empty($this->routes[$method])) {
-            return $this->viewFactory->build($this->viewFor404);
+        if (empty($this->routes[$method]) || empty($this->routes[$method][$uri])) {
+            $viewClass = $this->viewFor404;
+        } else {
+            $viewClass = $this->routes[$method][$uri];
         }
 
-        if (empty($this->routes[$method][$uri])) {
-            return $this->viewFactory->build($this->viewFor404);
-        }
-
-        return $this->viewFactory->build($this->routes[$method][$uri]);
+        $view = $this->viewFactory->build($viewClass);
+        return new Route($method, $uri, $view, null);
     }
 }

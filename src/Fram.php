@@ -26,12 +26,13 @@ final class Fram
             $uri = substr($uri, 0, $pos);
         }
         $uri = rawurldecode($uri);
-        $view = $this->router->route($_SERVER['REQUEST_METHOD'], $uri);
+        $route = $this->router->route($_SERVER['REQUEST_METHOD'], $uri);
+        $view = $route->getView();
         $implements = class_implements($view);
 
         foreach ($this->handlers as $handler) {
             if (in_array($handler->getViewClass(), $implements, true)) {
-                $handler->handle($view);
+                $handler->handle($route);
                 return true;
             }
         }
