@@ -1,0 +1,23 @@
+{
+  "name": "paket/fram",
+  "description": "Minimal view framework",
+  "homepage": "https://github.com/paketphp",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": ">=7.2"
+  },
+  "suggest": {
+    "paket/bero": "For BeroViewFactory"
+  },
+  "autoload": {
+    "psr-4": {
+      "Paket\\Fram\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Paket\\Fram\\Examples\\": "examples/src/"
+    }
+  }
+}
