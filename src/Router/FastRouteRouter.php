@@ -12,26 +12,20 @@ class FastRouteRouter implements Router
     private $dispatcher;
     /** @var ViewFactory */
     private $viewFactory;
-    /** @var string */
-    private $viewFor404;
 
-    public function __construct(Dispatcher $dispatcher, string $viewFor404, ViewFactory $viewFactory)
+    public function __construct(Dispatcher $dispatcher, ViewFactory $viewFactory)
     {
         $this->dispatcher = $dispatcher;
-        $this->viewFor404 = $viewFor404;
         $this->viewFactory = $viewFactory;
     }
 
-    public function route(string $method, string $uri): Route
+    public function route(Route $route): Route
     {
-        $routeInfo = $this->dispatcher->dispatch($method, $uri);
+        $routeInfo = $this->dispatcher->dispatch($route->getMethod(), $route->getUri());
         if ($routeInfo[0] === Dispatcher::FOUND) {
-            $viewClass = $routeInfo[1];
-        } else {
-            $viewClass = $this->viewFor404;
+            $view = $this->viewFactory->build($routeInfo[1]);
+            return $route->withView($view, $routeInfo);
         }
-
-        $view = $this->viewFactory->build($viewClass);
-        return new Route($method, $uri, $view, $routeInfo);
+        return $route;
     }
 }

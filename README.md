@@ -21,6 +21,7 @@ Routers included in the framework
 
 * SimpleRouter - simple string matching against uri
 * FastRouteRouter - uses FastRoute for routing
+* MultiRouter - uses multiple Routers for routing
 
 ### ViewFactory
 
@@ -74,3 +75,7 @@ of the framework.
 ## Examples
 
 See `/examples`
+
+### Running examples
+
+`php -S localhost:8888 -t examples/www`

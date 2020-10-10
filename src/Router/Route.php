@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Paket\Fram\Router;
 
+use Paket\Fram\View\EmptyView;
 use Paket\Fram\View\View;
 
 final class Route
@@ -15,12 +16,16 @@ final class Route
     private $view;
     private $context;
 
-    public function __construct(string $method, string $uri, View $view, $context)
+    private function __construct(string $method, string $uri, View $view)
     {
         $this->method = $method;
         $this->uri = $uri;
         $this->view = $view;
-        $this->context = $context;
+    }
+
+    public static function create(string $method, string $uri): self
+    {
+        return new self($method, $uri, new EmptyView());
     }
 
     public function getMethod(): string
@@ -41,5 +46,18 @@ final class Route
     public function getContext()
     {
         return $this->context;
+    }
+
+    public function hasEmptyView(): bool
+    {
+        return get_class($this->view) === EmptyView::class;
+    }
+
+    public function withView(View $view, $context = null): self
+    {
+        $route = clone $this;
+        $route->view = $view;
+        $route->context = $context;
+        return $route;
     }
 }
