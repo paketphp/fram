@@ -8,7 +8,7 @@ use Paket\Fram\View\HtmlView;
 
 final class IndexView implements HtmlView
 {
-    public function render(Route $route): void
+    public function render(Route $route)
     {
         ?>
         <html>

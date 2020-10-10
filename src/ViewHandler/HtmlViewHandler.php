@@ -8,12 +8,13 @@ use Paket\Fram\View\HtmlView;
 
 final class HtmlViewHandler implements ViewHandler
 {
-    public function handle(Route $route): void
+    public function handle(Route $route): Route
     {
         header('Content-Type: text/html');
         /** @var $view HtmlView */
         $view = $route->getView();
-        $view->render($route);
+        $newRoute = $view->render($route);
+        return $newRoute !== null ? $newRoute : $route;
     }
 
     public function getViewClass(): string

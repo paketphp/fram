@@ -7,5 +7,9 @@ use Paket\Fram\Router\Route;
 
 interface JsonView extends View
 {
-    public function render(Route $route): void;
+    /**
+     * @param Route $route
+     * @return Route|void
+     */
+    public function render(Route $route);
 }

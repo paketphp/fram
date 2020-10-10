@@ -8,12 +8,13 @@ use Paket\Fram\View\JsonView;
 
 final class JsonViewHandler implements ViewHandler
 {
-    public function handle(Route $route): void
+    public function handle(Route $route): Route
     {
         header('Content-Type: application/json');
         /** @var $view JsonView */
         $view = $route->getView();
-        $view->render($route);
+        $newRoute = $view->render($route);
+        return $newRoute !== null ? $newRoute : $route;
     }
 
     public function getViewClass(): string

@@ -6,46 +6,44 @@ namespace Paket\Fram;
 use LogicException;
 use Paket\Fram\Router\Route;
 use Paket\Fram\Router\Router;
+use Paket\Fram\ViewFactory\ViewFactory;
 use Paket\Fram\ViewHandler\ViewHandler;
 
 final class Fram
 {
+    /** @var ViewFactory */
+    private $viewFactory;
     /** @var Router */
     private $router;
     /** @var ViewHandler[] */
     private $handlers;
 
-    public function __construct(Router $router, ViewHandler ...$handlers)
+    public function __construct(ViewFactory $viewFactory, Router $router, ViewHandler ...$handlers)
     {
+        $this->viewFactory = $viewFactory;
         $this->router = $router;
         $this->handlers = $handlers;
     }
 
     public function run(): Route
     {
-        $uri = $_SERVER['REQUEST_URI'];
-        if (false !== $pos = strpos($uri, '?')) {
-            $uri = substr($uri, 0, $pos);
-        }
-        $uri = rawurldecode($uri);
-        $route = Route::create($_SERVER['REQUEST_METHOD'], $uri);
-        $route = $this->router->route($route);
-        if ($route->hasEmptyView()) {
+        $route = Route::create($this->viewFactory);
+        $newRoute = $this->router->route($route);
+        if ($newRoute->hasEmptyView()) {
             return $route;
         }
-        $this->executeRoute($route);
-        return $route;
+        return $this->executeRoute($newRoute);
     }
 
-    public function executeRoute(Route $route): void
+    public function executeRoute(Route $route): Route
     {
         $view = $route->getView();
         $implements = class_implements($view);
 
         foreach ($this->handlers as $handler) {
             if (in_array($handler->getViewClass(), $implements, true)) {
-                $handler->handle($route);
-                return;
+                $newRoute = $handler->handle($route);
+                return $newRoute === $route ? $newRoute : $this->executeRoute($newRoute);
             }
         }
         throw new LogicException('No View handler found for ' . get_class($view));

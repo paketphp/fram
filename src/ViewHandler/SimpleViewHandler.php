@@ -8,11 +8,12 @@ use Paket\Fram\View\SimpleView;
 
 final class SimpleViewHandler implements ViewHandler
 {
-    public function handle(Route $route): void
+    public function handle(Route $route): Route
     {
         /** @var $view SimpleView */
         $view = $route->getView();
-        $view->render($route);
+        $newRoute = $view->render($route);
+        return $newRoute !== null ? $newRoute : $route;
     }
 
     public function getViewClass(): string

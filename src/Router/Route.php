@@ -5,15 +5,19 @@ namespace Paket\Fram\Router;
 
 use Paket\Fram\View\EmptyView;
 use Paket\Fram\View\View;
+use Paket\Fram\ViewFactory\ViewFactory;
 
 final class Route
 {
+    /** @var ViewFactory */
+    private static $viewFactory;
     /** @var string */
     private $method;
     /** @var string */
     private $uri;
     /** @var View */
     private $view;
+    /** @var mixed */
     private $context;
     /** @var Route[] */
     private $pastRoutes = [];
@@ -25,9 +29,16 @@ final class Route
         $this->view = $view;
     }
 
-    public static function create(string $method, string $uri): self
+    public static function create(ViewFactory $viewFactory): self
     {
-        return new self($method, $uri, new EmptyView());
+        self::$viewFactory = $viewFactory;
+        $uri = $_SERVER['REQUEST_URI'];
+        if (false !== $pos = strpos($uri, '?')) {
+            $uri = substr($uri, 0, $pos);
+        }
+        $uri = rawurldecode($uri);
+        $emptyView = $viewFactory->build(EmptyView::class);
+        return new self($_SERVER['REQUEST_METHOD'], $uri, $emptyView);
     }
 
     public function getMethod(): string
@@ -45,6 +56,9 @@ final class Route
         return $this->view;
     }
 
+    /**
+     * @return mixed
+     */
     public function getContext()
     {
         return $this->context;
@@ -67,6 +81,15 @@ final class Route
     {
         $route = clone $this;
         $route->view = $view;
+        $route->context = $context;
+        $route->pastRoutes[] = $this;
+        return $route;
+    }
+
+    public function withViewClass(string $viewClass, $context = null): self
+    {
+        $route = clone $this;
+        $route->view = self::$viewFactory->build($viewClass);
         $route->context = $context;
         $route->pastRoutes[] = $this;
         return $route;

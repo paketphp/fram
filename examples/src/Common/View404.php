@@ -8,7 +8,7 @@ use Paket\Fram\View\HtmlView;
 
 class View404 implements HtmlView
 {
-    public function render(Route $route): void
+    public function render(Route $route)
     {
         ?>
         <html>
