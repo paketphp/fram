@@ -6,6 +6,7 @@ use Paket\Fram\Examples\Common\View404;
 use Paket\Fram\Examples\FastRoute\IndexView;
 use Paket\Fram\Fram;
 use Paket\Fram\Router\FastRouteRouter;
+use Paket\Fram\Router\Route;
 use Paket\Fram\ViewFactory\DefaultViewFactory;
 use Paket\Fram\ViewHandler\HtmlViewHandler;
 
@@ -19,10 +20,12 @@ $router = new FastRouteRouter(FastRoute\simpleDispatcher(function (FastRoute\Rou
 $fram = new Fram(new DefaultViewFactory(), $router, new HtmlViewHandler());
 
 try {
-    $route = $fram->run();
-    if ($route->hasEmptyView()) {
-        $fram->executeRoute($route->withViewClass(View404::class));
-    }
+    $fram->run(function (Route $route) {
+        if ($route->hasEmptyView()) {
+            return $route->withViewClass(View404::class);
+        }
+        return $route;
+    });
 } catch (Throwable $throwable) {
     http_response_code(500);
     echo $throwable->getMessage();

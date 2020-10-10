@@ -25,25 +25,27 @@ final class Fram
         $this->handlers = $handlers;
     }
 
-    public function run(): Route
+    public function run(callable $cb): void
     {
-        $route = Route::create($this->viewFactory);
-        $newRoute = $this->router->route($route);
-        if ($newRoute->hasEmptyView()) {
-            return $route;
+        $initRoute = Route::create($this->viewFactory);
+        $routerRoute = $this->router->route($initRoute);
+
+        $cbRoute = null;
+        $newRoute = $routerRoute;
+        while ($cbRoute !== $newRoute) {
+            $cbRoute = $cb($newRoute);
+            $newRoute = $this->executeRoute($cbRoute);
         }
-        return $this->executeRoute($newRoute);
     }
 
-    public function executeRoute(Route $route): Route
+    private function executeRoute(Route $route): Route
     {
         $view = $route->getView();
         $implements = class_implements($view);
 
         foreach ($this->handlers as $handler) {
             if (in_array($handler->getViewClass(), $implements, true)) {
-                $newRoute = $handler->handle($route);
-                return $newRoute === $route ? $newRoute : $this->executeRoute($newRoute);
+                return $handler->handle($route);
             }
         }
         throw new LogicException('No View handler found for ' . get_class($view));
