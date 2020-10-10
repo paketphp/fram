@@ -15,6 +15,8 @@ final class Route
     /** @var View */
     private $view;
     private $context;
+    /** @var Route[] */
+    private $pastRoutes = [];
 
     private function __construct(string $method, string $uri, View $view)
     {
@@ -53,11 +55,20 @@ final class Route
         return get_class($this->view) === EmptyView::class;
     }
 
+    /**
+     * @return Route[]
+     */
+    public function getPastRoutes(): array
+    {
+        return $this->pastRoutes;
+    }
+
     public function withView(View $view, $context = null): self
     {
         $route = clone $this;
         $route->view = $view;
         $route->context = $context;
+        $route->pastRoutes[] = $this;
         return $route;
     }
 }
