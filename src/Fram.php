@@ -34,6 +34,9 @@ final class Fram
         $newRoute = $routerRoute;
         while ($cbRoute !== $newRoute) {
             $cbRoute = $cb($newRoute);
+            if ($cbRoute === null) {
+                break;
+            }
             $newRoute = $this->executeRoute($cbRoute);
         }
     }
