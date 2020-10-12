@@ -90,7 +90,9 @@ final class Route
     {
         $route = clone $this;
         $route->view = self::$viewFactory->build($viewClass);
-        $route->context = $context;
+        if (func_num_args() === 2) {
+            $route->context = $context;
+        }
         $route->pastRoutes[] = $this;
         return $route;
     }
