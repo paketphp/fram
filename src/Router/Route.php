@@ -18,7 +18,7 @@ final class Route
     /** @var View */
     private $view;
     /** @var mixed */
-    private $context;
+    private $payload;
     /** @var Route[] */
     private $pastRoutes = [];
 
@@ -59,9 +59,9 @@ final class Route
     /**
      * @return mixed
      */
-    public function getContext()
+    public function getPayload()
     {
-        return $this->context;
+        return $this->payload;
     }
 
     public function hasEmptyView(): bool
@@ -77,23 +77,23 @@ final class Route
         return $this->pastRoutes;
     }
 
-    public function withView(View $view, $context = null): self
+    public function withView(View $view, $payload = null): self
     {
         $route = clone $this;
         $route->view = $view;
         if (func_num_args() === 2) {
-            $route->context = $context;
+            $route->payload = $payload;
         }
         $route->pastRoutes[] = $this;
         return $route;
     }
 
-    public function withViewClass(string $viewClass, $context = null): self
+    public function withViewClass(string $viewClass, $payload = null): self
     {
         $route = clone $this;
         $route->view = self::$viewFactory->build($viewClass);
         if (func_num_args() === 2) {
-            $route->context = $context;
+            $route->payload = $payload;
         }
         $route->pastRoutes[] = $this;
         return $route;
