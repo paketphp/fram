@@ -8,6 +8,7 @@ use Paket\Fram\Router\Route;
 use Paket\Fram\Router\Router;
 use Paket\Fram\ViewFactory\ViewFactory;
 use Paket\Fram\ViewHandler\ViewHandler;
+use Throwable;
 
 final class Fram
 {
@@ -28,16 +29,26 @@ final class Fram
     public function run(callable $cb): void
     {
         $initRoute = Route::create($this->viewFactory);
-        $routerRoute = $this->router->route($initRoute);
+        try {
+            $routerRoute = $this->router->route($initRoute);
+        } catch (Throwable $throwable) {
+            $routerRoute = $initRoute->withThrowable($throwable);
+        }
 
         $cbRoute = null;
         $newRoute = $routerRoute;
-        while ($cbRoute !== $newRoute) {
-            $cbRoute = $cb($newRoute);
-            if ($cbRoute === null) {
-                break;
+        next:
+        try {
+            while ($cbRoute !== $newRoute) {
+                $cbRoute = $cb($newRoute);
+                if ($cbRoute === null) {
+                    break;
+                }
+                $newRoute = $this->executeRoute($cbRoute);
             }
-            $newRoute = $this->executeRoute($cbRoute);
+        } catch (Throwable $throwable) {
+            $newRoute = $newRoute->withThrowable($throwable);
+            goto next;
         }
     }
 

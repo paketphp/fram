@@ -6,19 +6,20 @@ namespace Paket\Fram\Examples\Common;
 use Paket\Fram\Router\Route;
 use Paket\Fram\View\HtmlView;
 
-class View404 implements HtmlView
+class View500 implements HtmlView
 {
     public function render(Route $route)
     {
+        $message = $route->hasThrowable() ? $route->getThrowable()->getMessage() : '';
         http_response_code(500);
         ?>
         <html>
         <head>
-            <title>404 - Error</title>
+            <title>500 - Error</title>
         </head>
         <body>
-        <h1>404 - Error</h1>
-        <p>No such route</p>
+        <h1>500 - Error</h1>
+        <p><?= $message ?></p>
         </body>
         </html>
         <?php

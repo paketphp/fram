@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Paket\Fram\Examples\Common\View404;
+use Paket\Fram\Examples\Common\View500;
 use Paket\Fram\Examples\Simple\IndexView;
 use Paket\Fram\Fram;
 use Paket\Fram\Router\Route;
@@ -17,14 +18,13 @@ $router = new SimpleRouter(
     ]]);
 $fram = new Fram(new DefaultViewFactory(), $router, new HtmlViewHandler());
 
-try {
-    $fram->run(function (Route $route) {
-        if ($route->hasEmptyView()) {
-            return $route->withViewClass(View404::class);
-        }
-        return $route;
-    });
-} catch (Throwable $throwable) {
-    http_response_code(500);
-    echo $throwable->getMessage();
-}
+$fram->run(function (Route $route) {
+    if ($route->hasThrowable()) {
+        return $route->withViewClass(View500::class);
+    }
+
+    if ($route->hasEmptyView()) {
+        return $route->withViewClass(View404::class);
+    }
+    return $route;
+});

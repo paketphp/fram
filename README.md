@@ -18,17 +18,16 @@ $router = new SimpleRouter(
     ]]);
 $fram = new Fram(new DefaultViewFactory(), $router, new HtmlViewHandler());
 
-try {
-    $fram->run(function (Route $route) {
-        if ($route->hasEmptyView()) {
-            return $route->withViewClass(View404::class);
-        }
-        return $route;
-    });
-} catch (Throwable $throwable) {
-    http_response_code(500);
-    echo $throwable->getMessage();
-}
+$fram->run(function (Route $route) {
+    if ($route->hasThrowable()) {
+        return $route->withViewClass(View500::class);
+    }
+
+    if ($route->hasEmptyView()) {
+        return $route->withViewClass(View404::class);
+    }
+    return $route;
+});
 ```
 
 ### Examples
@@ -121,4 +120,4 @@ It is thru the `run()` callback how 404 pages are managed. Fram has no knowledge
 
 ## Error handling
 
-Fram does not solve error handling. That is something that needs to be configured outside of the framework.
+Fram does not register any exception, error or shutdown handlers. That is something that needs to be configured outside of the framework.
