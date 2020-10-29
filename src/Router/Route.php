@@ -97,6 +97,7 @@ final class Route
         if (func_num_args() === 2) {
             $route->payload = $payload;
         }
+        $route->throwable = null;
         $route->pastRoutes[] = $this;
         return $route;
     }
@@ -108,6 +109,7 @@ final class Route
         if (func_num_args() === 2) {
             $route->payload = $payload;
         }
+        $route->throwable = null;
         $route->pastRoutes[] = $this;
         return $route;
     }
