@@ -72,6 +72,11 @@ final class Route
         return $this->throwable;
     }
 
+    public function setThrowable(Throwable $throwable): void
+    {
+        $this->throwable = $throwable;
+    }
+
     public function hasThrowable(): bool
     {
         return isset($this->throwable);
@@ -110,14 +115,6 @@ final class Route
             $route->payload = $payload;
         }
         $route->throwable = null;
-        $route->pastRoutes[] = $this;
-        return $route;
-    }
-
-    public function withThrowable(Throwable $throwable): self
-    {
-        $route = clone $this;
-        $route->throwable = $throwable;
         $route->pastRoutes[] = $this;
         return $route;
     }

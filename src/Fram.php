@@ -32,7 +32,8 @@ final class Fram
         try {
             $routerRoute = $this->router->route($initRoute);
         } catch (Throwable $throwable) {
-            $routerRoute = $initRoute->withThrowable($throwable);
+            $routerRoute = $initRoute;
+            $routerRoute->setThrowable($throwable);
         }
 
         $cbRoute = null;
@@ -47,7 +48,7 @@ final class Fram
                 $newRoute = $this->executeRoute($cbRoute);
             }
         } catch (Throwable $throwable) {
-            $newRoute = $newRoute->withThrowable($throwable);
+            $newRoute->setThrowable($throwable);
             goto next;
         }
     }
