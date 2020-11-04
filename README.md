@@ -18,9 +18,9 @@ $router = new SimpleRouter(
     ]]);
 $fram = new Fram(new DefaultViewFactory(), $router, new HtmlViewHandler());
 
-$fram->run(function (Route $route) {
-    if ($route->hasThrowable()) {
-        return $route->withViewClass(View500::class);
+$fram->run(function (Route $route, ?Throwable $throwable) {
+    if (isset($throwable)) {
+        return $route->withViewClass(View500::class, $throwable);
     }
 
     if ($route->hasEmptyView()) {
