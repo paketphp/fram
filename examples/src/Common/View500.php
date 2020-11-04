@@ -5,12 +5,13 @@ namespace Paket\Fram\Examples\Common;
 
 use Paket\Fram\Router\Route;
 use Paket\Fram\View\HtmlView;
+use Throwable;
 
 class View500 implements HtmlView
 {
     public function render(Route $route)
     {
-        $message = $route->hasThrowable() ? $route->getThrowable()->getMessage() : '';
+        $message = $route->getPayload() instanceof Throwable ? $route->getPayload()->getMessage() : '';
         http_response_code(500);
         ?>
         <html>

@@ -28,12 +28,13 @@ final class Fram
 
     public function run(callable $cb): void
     {
+        $throwable = null;
         $initRoute = Route::create($this->viewFactory);
         try {
             $routerRoute = $this->router->route($initRoute);
-        } catch (Throwable $throwable) {
+        } catch (Throwable $t) {
             $routerRoute = $initRoute;
-            $routerRoute->setThrowable($throwable);
+            $throwable = $t;
         }
 
         $cbRoute = null;
@@ -41,14 +42,15 @@ final class Fram
         next:
         try {
             while ($cbRoute !== $newRoute) {
-                $cbRoute = $cb($newRoute);
+                $cbRoute = $cb($newRoute, $throwable);
                 if ($cbRoute === null) {
                     break;
                 }
+                $throwable = null;
                 $newRoute = $this->executeRoute($cbRoute);
             }
-        } catch (Throwable $throwable) {
-            $newRoute->setThrowable($throwable);
+        } catch (Throwable $t) {
+            $throwable = $t;
             goto next;
         }
     }

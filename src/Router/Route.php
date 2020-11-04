@@ -6,7 +6,6 @@ namespace Paket\Fram\Router;
 use Paket\Fram\View\EmptyView;
 use Paket\Fram\View\View;
 use Paket\Fram\ViewFactory\ViewFactory;
-use Throwable;
 
 final class Route
 {
@@ -20,8 +19,6 @@ final class Route
     private $view;
     /** @var mixed */
     private $payload;
-    /** @var Throwable|null */
-    private $throwable;
     /** @var Route[] */
     private $pastRoutes = [];
 
@@ -67,21 +64,6 @@ final class Route
         return $this->payload;
     }
 
-    public function getThrowable(): ?Throwable
-    {
-        return $this->throwable;
-    }
-
-    public function setThrowable(Throwable $throwable): void
-    {
-        $this->throwable = $throwable;
-    }
-
-    public function hasThrowable(): bool
-    {
-        return isset($this->throwable);
-    }
-
     public function hasEmptyView(): bool
     {
         return get_class($this->view) === EmptyView::class;
@@ -102,7 +84,6 @@ final class Route
         if (func_num_args() === 2) {
             $route->payload = $payload;
         }
-        $route->throwable = null;
         $route->pastRoutes[] = $this;
         return $route;
     }
@@ -114,7 +95,6 @@ final class Route
         if (func_num_args() === 2) {
             $route->payload = $payload;
         }
-        $route->throwable = null;
         $route->pastRoutes[] = $this;
         return $route;
     }
