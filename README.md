@@ -16,7 +16,7 @@ Fram's design is more of a convention based framework instead of providing every
 ```
 $router = new SimpleRouter(
     ['GET' => [
-        '/simple/' => IndexView::class
+        '/' => IndexView::class
     ]]);
 $fram = new Fram(new DefaultViewFactory(), $router, new HtmlViewHandler());
 
