@@ -39,19 +39,18 @@ final class Fram
 
         $cbRoute = null;
         $newRoute = $routerRoute;
-        next:
-        try {
-            while ($cbRoute !== $newRoute) {
-                $cbRoute = $cb($newRoute, $throwable);
-                if ($cbRoute === null) {
-                    break;
-                }
-                $throwable = null;
-                $newRoute = $this->executeRoute($cbRoute);
+        while ($cbRoute !== $newRoute) {
+            $cbRoute = $cb($newRoute, $throwable);
+            if ($cbRoute === null) {
+                break;
             }
-        } catch (Throwable $t) {
-            $throwable = $t;
-            goto next;
+            $throwable = null;
+            try {
+                $newRoute = $this->executeRoute($cbRoute);
+            } catch (Throwable $t) {
+                $cbRoute = null;
+                $throwable = $t;
+            }
         }
     }
 
