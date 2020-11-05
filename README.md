@@ -3,7 +3,9 @@
 Fram (_Swedish_ in front) is a view framework for PHP. Fram's goal is to fit everywhere, new projects, existing projects,
 side by side with other frameworks, thus Fram is a flexible framework that can fit into many scenarios.
 
-Fram's design is more of a convention based frmaework instead of providing everything but the kitchen sink like other frameworks. It is  up to the user of Fram to customize it based on project needs.
+Fram is a view framework only, based on a route a view can rendered. Other things necessary for a project like database handling, authentication, template rendering or logging, is not within the scope of Fram.
+
+Fram's design is more of a convention based framework instead of providing everything but the kitchen sink like other frameworks. It is  up to the user of Fram to customize it based on project needs.
 
 ## Installation
 
@@ -105,18 +107,21 @@ Fram is the engine that basically pumps the Route thru the system.
 By calling `run()` on Fram the framework initiates a request.
 `run()` is called by providing a callback, this callback gives the project the necessary control over each Route change and can either approve or change Route. 
 
-The `run()` callback is  powerful mechanism the enables Fram to integrate better with existing code or other frameworks. By having the possibility to inspect each Route change, the callback can redirect or abort if needed. Typical scenarios are debugging, different execution path depending on environment, fallback to legacy code.
+The `run()` callback is  powerful mechanism the enables Fram to integrate better with existing code or other frameworks. By having the possibility to inspect each Route change, the callback can redirect or abort if needed. Typical scenarios are debugging, different execution path depending on environment, fallback to legacy code and authorization checks.
 
 It is thru the `run()` callback how 404 pages are managed. Fram has no knowledge about how to handle the `EmptyView` case, but the callback can instruct Fram how to handle it by doing an internal redirect to the correct View.
+
+Fram also catches exceptions that can happen either in Router phase or in the ViewHandler and View phase. Exceptions are passed back to the callback as an optional Throwable second parameter, callback can then redirect with a new Route if needed.  
 
 #### Flow of Fram
 
 1. initiates a Route
 2. executes the Router to set a View on Route
-3. calls registered callback with Route
-4. matches the Route's View with registered View handlers
-5. executes matched View handler with Route
-6. calls 3 if Route has changed
+3. calls registered callback with Route and optional Throwable if an exception happened
+4. callback returns the Route or a new Route
+5. matches the Route's View with registered View handlers
+6. executes matched View handler with Route
+7. calls 3 if Route has changed or on exception
 
 ## Error handling
 
