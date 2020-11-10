@@ -9,5 +9,5 @@ interface ViewHandler
 {
     public function handle(Route $route): Route;
 
-    public function getViewClass(): string;
+    public function getViewTypeClass(): string;
 }

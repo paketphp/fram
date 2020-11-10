@@ -17,7 +17,7 @@ final class HtmlViewHandler implements ViewHandler
         return $newRoute !== null ? $newRoute : $route;
     }
 
-    public function getViewClass(): string
+    public function getViewTypeClass(): string
     {
         return HtmlView::class;
     }

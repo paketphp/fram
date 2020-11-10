@@ -17,7 +17,7 @@ final class JsonViewHandler implements ViewHandler
         return $newRoute !== null ? $newRoute : $route;
     }
 
-    public function getViewClass(): string
+    public function getViewTypeClass(): string
     {
         return JsonView::class;
     }

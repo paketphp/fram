@@ -207,7 +207,7 @@ final class FramTest extends TestCase
                 return $callable($route);
             }
 
-            public function getViewClass(): string
+            public function getViewTypeClass(): string
             {
                 return TestViewType::class;
             }

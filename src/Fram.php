@@ -60,7 +60,7 @@ final class Fram
         $implements = class_implements($view);
 
         foreach ($this->handlers as $handler) {
-            if (in_array($handler->getViewClass(), $implements, true)) {
+            if (in_array($handler->getViewTypeClass(), $implements, true)) {
                 return $handler->handle($route);
             }
         }

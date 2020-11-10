@@ -16,7 +16,7 @@ final class SimpleViewHandler implements ViewHandler
         return $newRoute !== null ? $newRoute : $route;
     }
 
-    public function getViewClass(): string
+    public function getViewTypeClass(): string
     {
         return SimpleView::class;
     }

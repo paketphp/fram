@@ -22,7 +22,7 @@ final class SimpleViewHandlerTest extends TestCase
 
     public function testThatGetViewClassReturnsCorrectViewClass()
     {
-        $this->assertSame(SimpleView::class, $this->viewHandler->getViewClass());
+        $this->assertSame(SimpleView::class, $this->viewHandler->getViewTypeClass());
     }
 
     public function testHandleRendersViewWithCorrectRoute()
