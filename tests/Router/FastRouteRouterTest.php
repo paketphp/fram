@@ -5,23 +5,15 @@ namespace Paket\Fram\Router;
 
 use FastRoute\RouteCollector;
 use Paket\Fram\Fixture\TestView;
+use Paket\Fram\Helper\RouteHelper;
 use Paket\Fram\View\EmptyView;
-use Paket\Fram\ViewFactory\DefaultViewFactory;
 use PHPUnit\Framework\TestCase;
 use function FastRoute\simpleDispatcher;
 
 final class FastRouteRouterTest extends TestCase
 {
-    /** @var DefaultViewFactory */
-    private static $viewFactory;
-
     /** @var FastRouteRouter */
     private $router;
-
-    public static function setUpBeforeClass(): void
-    {
-        self::$viewFactory = new DefaultViewFactory();
-    }
 
     protected function setUp(): void
     {
@@ -32,7 +24,7 @@ final class FastRouteRouterTest extends TestCase
 
     public function testThatItTakesDispatcherAndReturnsNewRouteOnHit()
     {
-        $route = self::getRoute('GET', '/get');
+        $route = RouteHelper::getRoute('GET', '/get');
         $newRoute = $this->router->route($route);
         $this->assertNotSame($route, $newRoute);
         $this->assertInstanceOf(TestView::class, $newRoute->getView());
@@ -41,16 +33,9 @@ final class FastRouteRouterTest extends TestCase
 
     public function testThatItTakesDispatcherAndReturnsSameRouteOnMiss()
     {
-        $route = self::getRoute('POST', '/get');
+        $route = RouteHelper::getRoute('POST', '/get');
         $newRoute = $this->router->route($route);
         $this->assertSame($route, $newRoute);
         $this->assertInstanceOf(EmptyView::class, $newRoute->getView());
-    }
-
-    private static function getRoute(string $method, string $uri): Route
-    {
-        $_SERVER['REQUEST_METHOD'] = $method;
-        $_SERVER['REQUEST_URI'] = $uri;
-        return Route::create(self::$viewFactory);
     }
 }
