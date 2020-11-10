@@ -2,8 +2,8 @@
 declare(strict_types=1);
 
 use FastRoute\RouteCollector;
-use Paket\Fram\Examples\Common\View404;
-use Paket\Fram\Examples\Common\View500;
+use Paket\Fram\Examples\Common\View\View404;
+use Paket\Fram\Examples\Common\View\View500;
 use Paket\Fram\Examples\FastRoute\IndexView;
 use Paket\Fram\Fram;
 use Paket\Fram\Router\FastRouteRouter;

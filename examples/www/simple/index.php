@@ -1,4 +1,8 @@
 <?php
 declare(strict_types=1);
 
-require __DIR__ . '/../../src/Simple/bootstrap.php';
+use Paket\Fram\Examples\Simple\SimpleApplication;
+
+require __DIR__ . '/../../../vendor/autoload.php';
+
+(new SimpleApplication())->run();

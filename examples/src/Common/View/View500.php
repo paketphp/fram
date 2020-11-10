@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Paket\Fram\Examples\Common;
+namespace Paket\Fram\Examples\Common\View;
 
 use Paket\Fram\Router\Route;
 use Paket\Fram\View\HtmlView;
