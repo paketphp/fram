@@ -227,6 +227,19 @@ final class FramTest extends TestCase
         $this->assertSame($count, 2);
     }
 
+    public function testThatThrowingInCallableDoesBubble()
+    {
+        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+            return $route;
+        }), self::getViewHandler(function (Route $route) {
+            return $route;
+        }));
+
+        $this->expectException(RuntimeException::class);
+        $fram->run(function (Route $route, ?Throwable $throwable) {
+            throw new RuntimeException();
+        });
+    }
 
     private static function getRouter(callable $callable): Router
     {
