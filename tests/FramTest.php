@@ -7,6 +7,7 @@ use LogicException;
 use Paket\Fram\Fixture\SecondTestView;
 use Paket\Fram\Fixture\TestView;
 use Paket\Fram\Fixture\TestViewType;
+use Paket\Fram\Fixture\ThirdTestView;
 use Paket\Fram\Router\Route;
 use Paket\Fram\Router\Router;
 use Paket\Fram\ViewFactory\DefaultViewFactory;
@@ -142,6 +143,63 @@ final class FramTest extends TestCase
         });
     }
 
+    public function testThatWhenViewThrowsKeepPreviousRoute()
+    {
+        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+            return $route;
+        }), self::getViewHandler(function (Route $route) {
+            if ($route->getView() instanceof TestView) {
+                throw new RuntimeException();
+            }
+            $this->assertFalse(true);
+        }));
+
+        $fram->run(function (Route $route, ?Throwable $throwable) {
+            static $newRoute;
+
+            if ($route->hasEmptyView()) {
+                return $newRoute = $route->withViewClass(TestView::class);
+            }
+
+            $this->assertSame($newRoute, $route);
+        });
+    }
+
+    public function testThatThrowableGetResetBetweenRuns()
+    {
+        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+            return $route;
+        }), self::getViewHandler(function (Route $route) {
+            if ($route->getView() instanceof TestView) {
+                throw new RuntimeException();
+            }
+            return $route->withViewClass(ThirdTestView::class);
+        }));
+
+        $count = 0;
+        $fram->run(function (Route $route, ?Throwable $throwable) use (&$count) {
+            static $newRoute;
+            $count++;
+
+            if ($count === 1) {
+                return $newRoute = $route->withViewClass(TestView::class);
+            }
+
+            if ($count === 2) {
+                $this->assertInstanceOf(RuntimeException::class, $throwable);
+                return $route->withViewClass(SecondTestView::class);
+            }
+
+            if ($count === 3) {
+                $this->assertNull($throwable);
+                return null;
+            }
+
+            $this->assertTrue(false);
+        });
+        $this->assertSame($count, 3);
+    }
+
     public function testThatReturningNewRouteFromViewCallsCallable()
     {
         $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
@@ -150,8 +208,8 @@ final class FramTest extends TestCase
             return $route->withViewClass(SecondTestView::class);
         }));
 
-        $fram->run(function (Route $route, ?Throwable $throwable) {
-            static $count = 0;
+        $count = 0;
+        $fram->run(function (Route $route, ?Throwable $throwable) use (&$count) {
             $count++;
 
             if ($count === 1) {
@@ -166,6 +224,7 @@ final class FramTest extends TestCase
 
             $this->assertTrue(false);
         });
+        $this->assertSame($count, 2);
     }
 
 

@@ -48,6 +48,7 @@ final class Fram
             try {
                 $newRoute = $this->executeRoute($cbRoute);
             } catch (Throwable $t) {
+                $newRoute = $cbRoute;
                 $cbRoute = null;
                 $throwable = $t;
             }
