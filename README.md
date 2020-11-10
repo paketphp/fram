@@ -7,6 +7,8 @@ Fram is a view framework only, based on a route a view can rendered. Other thing
 
 Fram's design is based around a few core interfaces, Fram ships with a few implementations of these interfaces, but it is  up to the user of Fram to customize it based on project needs. Each core interface is designed to be as small as possible making the implementation trivial, thus extending Fram for projects needs should be possible within minutes.
 
+![](https://github.com/paketphp/fram/workflows/tests/badge.svg)
+
 ## Installation
 
 `composer require paket/fram`
