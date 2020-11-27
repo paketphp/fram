@@ -1,4 +1,5 @@
 /coverage/
 /vendor/
 /examples/data/
+phpunit.phar
 .phpunit.result.cache
