@@ -6,7 +6,7 @@ namespace Paket\Fram\Examples\Simple;
 use Paket\Fram\Examples\Common\Component\FootComponent;
 use Paket\Fram\Examples\Common\Component\HeadComponent;
 use Paket\Fram\Examples\Common\Note\NoteRepository;
-use Paket\Fram\Examples\Common\Util\Html;
+use Paket\Fram\Util\Escape;
 use Paket\Fram\Router\Route;
 use Paket\Fram\View\HtmlView;
 
@@ -35,8 +35,8 @@ final class IndexView implements HtmlView
             <ul class="list-group-flush">
                 <?php foreach ($notesRepository->getAllNotes() as $note) : ?>
                     <li class="list-group-item">
-                        <h2><?= Html::escape($note->title) ?></h2>
-                        <p><?= Html::escape($note->text) ?></p>
+                        <h2><?= Escape::html($note->title) ?></h2>
+                        <p><?= Escape::html($note->text) ?></p>
                     </li>
                 <?php endforeach; ?>
             </ul>
