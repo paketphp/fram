@@ -33,6 +33,9 @@ final class Fram
         try {
             $routerRoute = $this->router->route($initRoute);
         } catch (Throwable $t) {
+            if ($t instanceof LogicException) {
+                throw $t;
+            }
             $routerRoute = $initRoute;
             $throwable = $t;
         }
@@ -48,6 +51,9 @@ final class Fram
             try {
                 $newRoute = $this->executeRoute($cbRoute);
             } catch (Throwable $t) {
+                if ($t instanceof LogicException) {
+                    throw $t;
+                }
                 $newRoute = $cbRoute;
                 $cbRoute = null;
                 $throwable = $t;

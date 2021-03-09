@@ -10,6 +10,7 @@ use Paket\Fram\Fixture\TestViewType;
 use Paket\Fram\Fixture\ThirdTestView;
 use Paket\Fram\Router\Route;
 use Paket\Fram\Router\Router;
+use Paket\Fram\View\EmptyView;
 use Paket\Fram\ViewFactory\DefaultViewFactory;
 use Paket\Fram\ViewHandler\ViewHandler;
 use PHPUnit\Framework\TestCase;
@@ -69,41 +70,30 @@ final class FramTest extends TestCase
         });
     }
 
-    public function testThatReturningEmptyRouteSetsThrowable()
-    {
-        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
-            return $route;
-        }), self::getViewHandler(function (Route $route) {
-            $this->assertTrue(false);
-            return $route;
-        }));
-
-        $fram->run(function (Route $route, ?Throwable $throwable) {
-            if (isset($throwable)) {
-                $this->assertInstanceOf(LogicException::class, $throwable);
-                return null;
-            }
-
-            return $route;
-        });
-    }
-
-    public function testThatNotRegisteringViewHandlerSetsThrowable()
+    public function testThatReturningEmptyViewThrowsLogicException()
     {
         $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
             return $route;
         }));
 
+        $this->expectException(LogicException::class);;
         $fram->run(function (Route $route, ?Throwable $throwable) {
-            if (isset($throwable)) {
-                $this->assertInstanceOf(LogicException::class, $throwable);
-                return null;
-            }
-
+            $this->assertInstanceOf(EmptyView::class, $route->getView());
             return $route;
         });
     }
 
+    public function testThatNotRegisteringViewHandlerThrowsLogicException()
+    {
+        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+            return $route->withViewClass(TestView::class);
+        }));
+
+        $this->expectException(LogicException::class);
+        $fram->run(function (Route $route, ?Throwable $throwable) {
+            return $route;
+        });
+    }
 
     public function testThatThrowingInRouterSetsThrowable()
     {
@@ -125,6 +115,18 @@ final class FramTest extends TestCase
         });
     }
 
+    public function testThatThrowingLogicExceptionInRouterThrows()
+    {
+        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+            throw new LogicException();
+        }));
+
+        $this->expectException(LogicException::class);
+        $fram->run(function (Route $route, ?Throwable $throwable) {
+            return $route;
+        });
+    }
+
     public function testThatThrowingInViewSetsThrowable()
     {
         $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
@@ -139,6 +141,20 @@ final class FramTest extends TestCase
                 return null;
             }
 
+            return $route;
+        });
+    }
+
+    public function testThatThrowingLogicExceptionInViewThrows()
+    {
+        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+            return $route->withViewClass(TestView::class);
+        }), self::getViewHandler(function (Route $route) {
+            throw new LogicException();
+        }));
+
+        $this->expectException(LogicException::class);
+        $fram->run(function (Route $route, ?Throwable $throwable) {
             return $route;
         });
     }
@@ -178,11 +194,10 @@ final class FramTest extends TestCase
 
         $count = 0;
         $fram->run(function (Route $route, ?Throwable $throwable) use (&$count) {
-            static $newRoute;
             $count++;
 
             if ($count === 1) {
-                return $newRoute = $route->withViewClass(TestView::class);
+                return $route->withViewClass(TestView::class);
             }
 
             if ($count === 2) {
