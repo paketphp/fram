@@ -32,9 +32,14 @@
       "Paket\\Fram\\Helper\\Shell::downloadPhpUnit",
       "@php phpunit.phar"
     ],
-    "coverage": "phpdbg -qrr vendor/phpunit/phpunit/phpunit --coverage-text --colors=never",
+    "coverage": [
+      "Paket\\Fram\\Helper\\Shell::downloadPhpUnit",
+      "phpdbg -qrr phpunit.phar --coverage-text --colors=never"
+    ],
     "coverage-html": [
+      "Paket\\Fram\\Helper\\Shell::downloadPhpUnit",
       "Paket\\Fram\\Helper\\Shell::deleteCoverage",
-      "phpdbg -qrr vendor/phpunit/phpunit/phpunit --coverage-html coverage"]
+      "phpdbg -qrr phpunit.phar --coverage-html coverage"
+    ]
   }
 }
