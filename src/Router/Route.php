@@ -5,12 +5,12 @@ namespace Paket\Fram\Router;
 
 use Paket\Fram\View\EmptyView;
 use Paket\Fram\View\View;
-use Paket\Fram\ViewFactory\ViewFactory;
+use Psr\Container\ContainerInterface;
 
 final class Route
 {
-    /** @var ViewFactory */
-    private static $viewFactory;
+    /** @var ContainerInterface */
+    private static $container;
     /** @var string */
     private $method;
     /** @var string */
@@ -29,15 +29,15 @@ final class Route
         $this->view = $view;
     }
 
-    public static function create(ViewFactory $viewFactory): self
+    public static function create(ContainerInterface $container): self
     {
-        self::$viewFactory = $viewFactory;
+        self::$container = $container;
         $uri = $_SERVER['REQUEST_URI'];
         if (false !== $pos = strpos($uri, '?')) {
             $uri = substr($uri, 0, $pos);
         }
         $uri = rawurldecode($uri);
-        $emptyView = $viewFactory->build(EmptyView::class);
+        $emptyView = $container->get(EmptyView::class);
         return new self($_SERVER['REQUEST_METHOD'], $uri, $emptyView);
     }
 
@@ -91,7 +91,7 @@ final class Route
     public function withViewClass(string $viewClass, $payload = null): self
     {
         $route = clone $this;
-        $route->view = self::$viewFactory->build($viewClass);
+        $route->view = self::$container->get($viewClass);
         if (func_num_args() === 2) {
             $route->payload = $payload;
         }

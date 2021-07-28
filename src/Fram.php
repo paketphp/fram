@@ -6,22 +6,22 @@ namespace Paket\Fram;
 use LogicException;
 use Paket\Fram\Router\Route;
 use Paket\Fram\Router\Router;
-use Paket\Fram\ViewFactory\ViewFactory;
 use Paket\Fram\ViewHandler\ViewHandler;
+use Psr\Container\ContainerInterface;
 use Throwable;
 
 final class Fram
 {
-    /** @var ViewFactory */
-    private $viewFactory;
+    /** @var ContainerInterface */
+    private $container;
     /** @var Router */
     private $router;
     /** @var ViewHandler[] */
     private $handlers;
 
-    public function __construct(ViewFactory $viewFactory, Router $router, ViewHandler ...$handlers)
+    public function __construct(ContainerInterface $container, Router $router, ViewHandler ...$handlers)
     {
-        $this->viewFactory = $viewFactory;
+        $this->container = $container;
         $this->router = $router;
         $this->handlers = $handlers;
     }
@@ -29,7 +29,7 @@ final class Fram
     public function run(callable $cb): void
     {
         $throwable = null;
-        $initRoute = Route::create($this->viewFactory);
+        $initRoute = Route::create($this->container);
         try {
             $routerRoute = $this->router->route($initRoute);
         } catch (Throwable $t) {

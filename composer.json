@@ -5,15 +5,16 @@
   "type": "library",
   "license": "MIT",
   "require": {
-    "php": ">=7.2"
+    "php": ">=7.2",
+    "psr/container": "^2.0"
   },
   "require-dev": {
     "ext-pdo": "*",
     "nikic/fast-route": "^1.3",
-    "paket/bero": "^0.1.0"
+    "paket/bero": "^0.3.0"
   },
   "suggest": {
-    "paket/bero": "For BeroViewFactory",
+    "paket/bero": "For ContainerInterface",
     "nikic/fast-route": "For FastRouteRouter"
   },
   "autoload": {

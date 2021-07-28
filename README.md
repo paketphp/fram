@@ -16,11 +16,12 @@ Fram's design is based around a few core interfaces, Fram ships with a few imple
 ## Usage
 
 ```
+$container = new BeroContainer(new StrictBero); // any PSR-11 ContainerInterface
 $router = new SimpleRouter(
     ['GET' => [
         '/' => IndexView::class
     ]]);
-$fram = new Fram(new DefaultViewFactory(), $router, new HtmlViewHandler());
+$fram = new Fram($container, $router, new HtmlViewHandler());
 
 $fram->run(function (Route $route, ?Throwable $throwable) {
     if (isset($throwable)) {
@@ -65,14 +66,11 @@ How the `View` is rendered, the method name and it's parameters, is decided per 
 `EmptyView` is a special view that represents the `null` `View`, i.e.
 when the is no matching View for the current request. Every request begins with `EmptyView` set.
 
-### ViewFactory
+### Container
 
-To instantiate a `View` class Fram uses a `ViewFactory`
+To instantiate a `View` class Fram uses [PSR-11](https://www.php-fig.org/psr/psr-11/) `ContainerInterface`
 
-View factories included in the framework
-
-* `DefaultViewFactory` - instantiates the View without any constructor arguments
-* `BeroViewFactory` - uses [Bero](https://github.com/paketphp/bero) dependency injector to instantiate Views
+Suggested implementation and used in all documentation and examples is `BeroContainer`, `BeroContainer` is part of [Bero](https://github.com/paketphp/bero) dependency injection container.
 
 ### ViewHandler
 

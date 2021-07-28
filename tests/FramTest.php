@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace Paket\Fram;
 
 use LogicException;
+use Paket\Bero\Container\BeroContainer;
+use Paket\Bero\StrictBero;
 use Paket\Fram\Fixture\SecondTestView;
 use Paket\Fram\Fixture\TestView;
 use Paket\Fram\Fixture\TestViewType;
@@ -11,7 +13,6 @@ use Paket\Fram\Fixture\ThirdTestView;
 use Paket\Fram\Router\Route;
 use Paket\Fram\Router\Router;
 use Paket\Fram\View\EmptyView;
-use Paket\Fram\ViewFactory\DefaultViewFactory;
 use Paket\Fram\ViewHandler\ViewHandler;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
@@ -27,7 +28,7 @@ final class FramTest extends TestCase
 
     public function testThatOnRouterMissRouteIsEmpty()
     {
-        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+        $fram = new Fram(new BeroContainer(new StrictBero()), self::getRouter(function (Route $route) {
             return $route;
         }), self::getViewHandler(function (Route $route) {
             $this->assertTrue(false);
@@ -42,7 +43,7 @@ final class FramTest extends TestCase
 
     public function testThatOnRouterHitRouteHasAView()
     {
-        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+        $fram = new Fram(new BeroContainer(new StrictBero()), self::getRouter(function (Route $route) {
             return $route->withViewClass(TestView::class);
         }), self::getViewHandler(function (Route $route) {
             $this->assertTrue(false);
@@ -58,7 +59,7 @@ final class FramTest extends TestCase
 
     public function testThatReturningRouteContinuesExecution()
     {
-        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+        $fram = new Fram(new BeroContainer(new StrictBero()), self::getRouter(function (Route $route) {
             return $route->withViewClass(TestView::class);
         }), self::getViewHandler(function (Route $route) {
             $this->assertTrue(true);
@@ -72,7 +73,7 @@ final class FramTest extends TestCase
 
     public function testThatReturningEmptyViewThrowsLogicException()
     {
-        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+        $fram = new Fram(new BeroContainer(new StrictBero()), self::getRouter(function (Route $route) {
             return $route;
         }));
 
@@ -85,7 +86,7 @@ final class FramTest extends TestCase
 
     public function testThatNotRegisteringViewHandlerThrowsLogicException()
     {
-        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+        $fram = new Fram(new BeroContainer(new StrictBero()), self::getRouter(function (Route $route) {
             return $route->withViewClass(TestView::class);
         }));
 
@@ -97,7 +98,7 @@ final class FramTest extends TestCase
 
     public function testThatThrowingInRouterSetsThrowable()
     {
-        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+        $fram = new Fram(new BeroContainer(new StrictBero()), self::getRouter(function (Route $route) {
             throw new RuntimeException();
         }), self::getViewHandler(function (Route $route) {
             $this->assertTrue(false);
@@ -117,7 +118,7 @@ final class FramTest extends TestCase
 
     public function testThatThrowingLogicExceptionInRouterThrows()
     {
-        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+        $fram = new Fram(new BeroContainer(new StrictBero()), self::getRouter(function (Route $route) {
             throw new LogicException();
         }));
 
@@ -129,7 +130,7 @@ final class FramTest extends TestCase
 
     public function testThatThrowingInViewSetsThrowable()
     {
-        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+        $fram = new Fram(new BeroContainer(new StrictBero()), self::getRouter(function (Route $route) {
             return $route->withViewClass(TestView::class);
         }), self::getViewHandler(function (Route $route) {
             throw new RuntimeException();
@@ -147,7 +148,7 @@ final class FramTest extends TestCase
 
     public function testThatThrowingLogicExceptionInViewThrows()
     {
-        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+        $fram = new Fram(new BeroContainer(new StrictBero()), self::getRouter(function (Route $route) {
             return $route->withViewClass(TestView::class);
         }), self::getViewHandler(function (Route $route) {
             throw new LogicException();
@@ -161,7 +162,7 @@ final class FramTest extends TestCase
 
     public function testThatWhenViewThrowsKeepPreviousRoute()
     {
-        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+        $fram = new Fram(new BeroContainer(new StrictBero()), self::getRouter(function (Route $route) {
             return $route;
         }), self::getViewHandler(function (Route $route) {
             if ($route->getView() instanceof TestView) {
@@ -183,7 +184,7 @@ final class FramTest extends TestCase
 
     public function testThatThrowableGetResetBetweenRuns()
     {
-        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+        $fram = new Fram(new BeroContainer(new StrictBero()), self::getRouter(function (Route $route) {
             return $route;
         }), self::getViewHandler(function (Route $route) {
             if ($route->getView() instanceof TestView) {
@@ -217,7 +218,7 @@ final class FramTest extends TestCase
 
     public function testThatReturningNewRouteFromViewCallsCallable()
     {
-        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+        $fram = new Fram(new BeroContainer(new StrictBero()), self::getRouter(function (Route $route) {
             return $route->withViewClass(TestView::class);
         }), self::getViewHandler(function (Route $route) {
             return $route->withViewClass(SecondTestView::class);
@@ -244,7 +245,7 @@ final class FramTest extends TestCase
 
     public function testThatThrowingInCallableDoesBubble()
     {
-        $fram = new Fram(new DefaultViewFactory(), self::getRouter(function (Route $route) {
+        $fram = new Fram(new BeroContainer(new StrictBero()), self::getRouter(function (Route $route) {
             return $route;
         }), self::getViewHandler(function (Route $route) {
             return $route;
