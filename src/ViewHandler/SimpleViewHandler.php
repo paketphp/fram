@@ -5,13 +5,13 @@ namespace Paket\Fram\ViewHandler;
 
 use Paket\Fram\Router\Route;
 use Paket\Fram\View\SimpleView;
+use Paket\Fram\View\View;
 
 final class SimpleViewHandler implements ViewHandler
 {
-    public function handle(Route $route): Route
+    public function handle(Route $route, View $view): Route
     {
         /** @var $view SimpleView */
-        $view = $route->getView();
         $newRoute = $view->render($route);
         return $newRoute !== null ? $newRoute : $route;
     }

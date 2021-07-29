@@ -5,7 +5,6 @@ namespace Paket\Fram\ViewHandler;
 
 use Paket\Fram\Fixture\SimpleTestView;
 use Paket\Fram\Fixture\TestView;
-use Paket\Fram\Helper\RouteHelper;
 use Paket\Fram\Router\Route;
 use Paket\Fram\View\SimpleView;
 use PHPUnit\Framework\TestCase;
@@ -18,6 +17,7 @@ final class SimpleViewHandlerTest extends TestCase
     protected function setUp(): void
     {
         $this->viewHandler = new SimpleViewHandler();
+        SimpleTestView::reset();
     }
 
     public function testThatGetViewClassReturnsCorrectViewClass()
@@ -27,57 +27,35 @@ final class SimpleViewHandlerTest extends TestCase
 
     public function testHandleRendersViewWithCorrectRoute()
     {
-        $route = RouteHelper::getRoute('GET', '/get');
-
-        $newRoute = $route->withView(new class(function ($route) use (&$newRoute) {
-            $this->assertSame($newRoute, $route);
-        }) implements SimpleView {
-
-            /** @var callable */
-            private $callable;
-
-            public function __construct(callable $callable)
-            {
-                $this->callable = $callable;
-            }
-
-            public function render(Route $route)
-            {
-                $callable = $this->callable;
-                $callable($route);
-            }
+        SimpleTestView::set(function ($viewRoute) use (&$route) {
+            $this->assertSame($route, $viewRoute);
         });
+        $route = new Route('GET', '/get', SimpleTestView::class);
 
-        $this->viewHandler->handle($newRoute);
+        $this->viewHandler->handle($route, new SimpleTestView());
     }
 
-    public function testHandleReturnsSameRouteWhenDoesNotReturnRoute()
+    public function testHandleReturnsSameRouteWhenViewDoesNotReturnRoute()
     {
-        $route = RouteHelper::getRoute('GET', '/get');
-
-        $newRoute = $route->withView(new class implements SimpleView {
-            public function render(Route $route)
-            {
-            }
+        SimpleTestView::set(function ($viewRoute) use (&$route) {
         });
+        $route = new Route('GET', '/get', SimpleTestView::class);
 
-        $returnedRoute = $this->viewHandler->handle($newRoute);
-        $this->assertSame($newRoute, $returnedRoute);
+        $returnedRoute = $this->viewHandler->handle($route, new SimpleTestView());
+
+        $this->assertSame($route, $returnedRoute);
     }
 
-    public function testHandleReturnsRouteFromView()
+    public function testHandleReturnsNewRouteFromView()
     {
-        $route = RouteHelper::getRoute('GET', '/get');
-
-        $newRoute = $route->withView(new class implements SimpleView {
-            public function render(Route $route)
-            {
-                return $route->withViewClass(TestView::class);
-            }
+        SimpleTestView::set(function ($viewRoute) {
+            return $viewRoute->withViewClass(TestView::class);
         });
+        $route = new Route('GET', '/get', SimpleTestView::class);
 
-        $returnedRoute = $this->viewHandler->handle($newRoute);
-        $this->assertNotSame($newRoute, $returnedRoute);
-        $this->assertInstanceOf(TestView::class, $returnedRoute->getView());
+        $returnedRoute = $this->viewHandler->handle($route, new SimpleTestView());
+
+        $this->assertNotSame($route, $returnedRoute);
+        $this->assertSame(TestView::class, $returnedRoute->getViewClass());
     }
 }

@@ -5,7 +5,6 @@ namespace Paket\Fram\Router;
 
 use FastRoute\RouteCollector;
 use Paket\Fram\Fixture\TestView;
-use Paket\Fram\Helper\RouteHelper;
 use Paket\Fram\View\EmptyView;
 use PHPUnit\Framework\TestCase;
 use function FastRoute\simpleDispatcher;
@@ -24,18 +23,15 @@ final class FastRouteRouterTest extends TestCase
 
     public function testThatItTakesDispatcherAndReturnsNewRouteOnHit()
     {
-        $route = RouteHelper::getRoute('GET', '/get');
-        $newRoute = $this->router->route($route);
-        $this->assertNotSame($route, $newRoute);
-        $this->assertInstanceOf(TestView::class, $newRoute->getView());
-        $this->assertIsArray($newRoute->getPayload());
+        $route = $this->router->route('GET', '/get');
+        $this->assertSame(TestView::class, $route->getViewClass());
+        $this->assertIsArray($route->getPayload());
     }
 
-    public function testThatItTakesDispatcherAndReturnsSameRouteOnMiss()
+    public function testThatItTakesDispatcherAndReturnsEmptyRouteOnMiss()
     {
-        $route = RouteHelper::getRoute('POST', '/get');
-        $newRoute = $this->router->route($route);
-        $this->assertSame($route, $newRoute);
-        $this->assertInstanceOf(EmptyView::class, $newRoute->getView());
+        $route = $this->router->route('POST', '/get');
+        $this->assertSame(EmptyView::class, $route->getViewClass());
+        $this->assertNull($route->getPayload());
     }
 }

@@ -6,6 +6,7 @@ namespace Paket\Fram;
 use LogicException;
 use Paket\Fram\Router\Route;
 use Paket\Fram\Router\Router;
+use Paket\Fram\View\EmptyView;
 use Paket\Fram\ViewHandler\ViewHandler;
 use Psr\Container\ContainerInterface;
 use Throwable;
@@ -28,16 +29,22 @@ final class Fram
 
     public function run(callable $cb): void
     {
+        $method = $_SERVER['REQUEST_METHOD'];
+        $uri = $_SERVER['REQUEST_URI'];
+        if (false !== $pos = strpos($uri, '?')) {
+            $uri = substr($uri, 0, $pos);
+        }
+        $uri = rawurldecode($uri);
+
         $throwable = null;
-        $initRoute = Route::create($this->container);
         try {
-            $routerRoute = $this->router->route($initRoute);
+            $routerRoute = $this->router->route($method, $uri);
         } catch (Throwable $t) {
             if ($t instanceof LogicException) {
                 throw $t;
             }
-            $routerRoute = $initRoute;
             $throwable = $t;
+            $routerRoute = new Route($method, $uri, EmptyView::class);
         }
 
         $cbRoute = null;
@@ -63,14 +70,15 @@ final class Fram
 
     private function executeRoute(Route $route): Route
     {
-        $view = $route->getView();
-        $implements = class_implements($view);
+        $viewClass = $route->getViewClass();
+        $implements = class_implements($viewClass);
 
         foreach ($this->handlers as $handler) {
             if (in_array($handler->getViewTypeClass(), $implements, true)) {
-                return $handler->handle($route);
+                $view = $this->container->get($viewClass);
+                return $handler->handle($route, $view);
             }
         }
-        throw new LogicException('No View handler found for ' . get_class($view));
+        throw new LogicException("No View handler found for {$viewClass}");
     }
 }

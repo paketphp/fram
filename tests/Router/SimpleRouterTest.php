@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace Paket\Fram\Router;
 
 use Paket\Fram\Fixture\TestView;
-use Paket\Fram\Helper\RouteHelper;
 use Paket\Fram\View\EmptyView;
 use PHPUnit\Framework\TestCase;
 
@@ -23,25 +22,19 @@ final class SimpleRouterTest extends TestCase
 
     public function testThatItReturnsNewRouteOnMethodAndUriHit()
     {
-        $route = RouteHelper::getRoute('GET', '/get');
-        $newRoute = $this->router->route($route);
-        $this->assertNotSame($route, $newRoute);
-        $this->assertInstanceOf(TestView::class, $newRoute->getView());
+        $route = $this->router->route('GET', '/get');
+        $this->assertSame(TestView::class, $route->getViewClass());
     }
 
-    public function testThatItReturnsSameRouteOnMethodHitAndUriMiss()
+    public function testThatItReturnsEmptyRouteOnMethodHitAndUriMiss()
     {
-        $route = RouteHelper::getRoute('GET', '/miss');
-        $newRoute = $this->router->route($route);
-        $this->assertSame($route, $newRoute);
-        $this->assertInstanceOf(EmptyView::class, $newRoute->getView());
+        $route = $this->router->route('GET', '/miss');
+        $this->assertSame(EmptyView::class, $route->getViewClass());
     }
 
-    public function testThatItReturnsSameRouteOnMethodMissAndUriHit()
+    public function testThatItReturnsEmptyRouteOnMethodMissAndUriHit()
     {
-        $route = RouteHelper::getRoute('POST', '/get');
-        $newRoute = $this->router->route($route);
-        $this->assertSame($route, $newRoute);
-        $this->assertInstanceOf(EmptyView::class, $newRoute->getView());
+        $route = $this->router->route('POST', '/get');
+        $this->assertSame(EmptyView::class, $route->getViewClass());
     }
 }

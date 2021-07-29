@@ -3,11 +3,10 @@ declare(strict_types=1);
 
 namespace Paket\Fram\ViewHandler;
 
+use Paket\Fram\Fixture\JsonTestView;
 use Paket\Fram\Fixture\TestView;
-use Paket\Fram\Helper\RouteHelper;
 use Paket\Fram\Router\Route;
 use Paket\Fram\View\JsonView;
-use Paket\Fram\View\SimpleView;
 use PHPUnit\Framework\TestCase;
 
 final class JsonViewHandlerTest extends TestCase
@@ -18,6 +17,7 @@ final class JsonViewHandlerTest extends TestCase
     protected function setUp(): void
     {
         $this->viewHandler = new JsonViewHandler();
+        JsonTestView::reset();
         HeaderFunction::reset();
     }
 
@@ -28,72 +28,45 @@ final class JsonViewHandlerTest extends TestCase
 
     public function testHandleRendersViewWithCorrectRoute()
     {
-        $route = RouteHelper::getRoute('GET', '/get');
-
-        $newRoute = $route->withView(new class(function ($route) use (&$newRoute) {
-            $this->assertSame($newRoute, $route);
-        }) implements SimpleView {
-
-            /** @var callable */
-            private $callable;
-
-            public function __construct(callable $callable)
-            {
-                $this->callable = $callable;
-            }
-
-            public function render(Route $route)
-            {
-                $callable = $this->callable;
-                $callable($route);
-            }
+        JsonTestView::set(function ($viewRoute) use (&$route) {
+            $this->assertSame($route, $viewRoute);
         });
+        $route = new Route('GET', '/get', JsonTestView::class);
 
-        $this->viewHandler->handle($newRoute);
+        $this->viewHandler->handle($route, new JsonTestView());
     }
 
-    public function testHandleReturnsSameRouteWhenDoesNotReturnRoute()
+    public function testHandleReturnsSameRouteWhenViewDoesNotReturnRoute()
     {
-        $route = RouteHelper::getRoute('GET', '/get');
-
-        $newRoute = $route->withView(new class implements SimpleView {
-            public function render(Route $route)
-            {
-            }
+        JsonTestView::set(function ($viewRoute) use (&$route) {
         });
+        $route = new Route('GET', '/get', JsonTestView::class);
 
-        $returnedRoute = $this->viewHandler->handle($newRoute);
-        $this->assertSame($newRoute, $returnedRoute);
+        $returnedRoute = $this->viewHandler->handle($route, new JsonTestView());
+
+        $this->assertSame($route, $returnedRoute);
     }
 
-    public function testHandleReturnsRouteFromView()
+    public function testHandleReturnsNewRouteFromView()
     {
-        $route = RouteHelper::getRoute('GET', '/get');
-
-        $newRoute = $route->withView(new class implements SimpleView {
-            public function render(Route $route)
-            {
-                return $route->withViewClass(TestView::class);
-            }
+        JsonTestView::set(function ($viewRoute) {
+            return $viewRoute->withViewClass(TestView::class);
         });
+        $route = new Route('GET', '/get', JsonTestView::class);
 
-        $returnedRoute = $this->viewHandler->handle($newRoute);
-        $this->assertNotSame($newRoute, $returnedRoute);
-        $this->assertInstanceOf(TestView::class, $returnedRoute->getView());
+        $returnedRoute = $this->viewHandler->handle($route, new JsonTestView());
+
+        $this->assertNotSame($route, $returnedRoute);
+        $this->assertSame(TestView::class, $returnedRoute->getViewClass());
     }
-
 
     public function testHandleSetsCorrectHeader()
     {
-        $route = RouteHelper::getRoute('GET', '/get');
-
-        $newRoute = $route->withView(new class implements SimpleView {
-            public function render(Route $route)
-            {
-            }
+        JsonTestView::set(function ($viewRoute) use (&$route) {
         });
+        $route = new Route('GET', '/get', JsonTestView::class);
 
-        $this->viewHandler->handle($newRoute);
+        $this->viewHandler->handle($route, new JsonTestView());
         $this->assertSame('Content-Type: application/json', HeaderFunction::get());
     }
 }

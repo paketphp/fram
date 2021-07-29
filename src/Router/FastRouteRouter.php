@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Paket\Fram\Router;
 
 use FastRoute\Dispatcher;
+use Paket\Fram\View\EmptyView;
 
 class FastRouteRouter implements Router
 {
@@ -15,12 +16,12 @@ class FastRouteRouter implements Router
         $this->dispatcher = $dispatcher;
     }
 
-    public function route(Route $route): Route
+    public function route(string $method, string $uri): Route
     {
-        $routeInfo = $this->dispatcher->dispatch($route->getMethod(), $route->getUri());
+        $routeInfo = $this->dispatcher->dispatch($method, $uri);
         if ($routeInfo[0] === Dispatcher::FOUND) {
-            return $route->withViewClass($routeInfo[1], $routeInfo);
+            return new Route($method, $uri, $routeInfo[1], $routeInfo);
         }
-        return $route;
+        return new Route($method, $uri, EmptyView::class);
     }
 }

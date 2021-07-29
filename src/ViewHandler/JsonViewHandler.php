@@ -5,14 +5,14 @@ namespace Paket\Fram\ViewHandler;
 
 use Paket\Fram\Router\Route;
 use Paket\Fram\View\JsonView;
+use Paket\Fram\View\View;
 
 final class JsonViewHandler implements ViewHandler
 {
-    public function handle(Route $route): Route
+    public function handle(Route $route, View $view): Route
     {
         header('Content-Type: application/json');
         /** @var $view JsonView */
-        $view = $route->getView();
         $newRoute = $view->render($route);
         return $newRoute !== null ? $newRoute : $route;
     }

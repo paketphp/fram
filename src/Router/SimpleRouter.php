@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Paket\Fram\Router;
 
+use Paket\Fram\View\EmptyView;
+
 final class SimpleRouter implements Router
 {
     /** @var array */
@@ -13,13 +15,11 @@ final class SimpleRouter implements Router
         $this->routes = $routes;
     }
 
-    public function route(Route $route): Route
+    public function route(string $method, string $uri): Route
     {
-        $method = $route->getMethod();
-        $uri = $route->getUri();
         if (isset($this->routes[$method], $this->routes[$method][$uri])) {
-            return $route->withViewClass($this->routes[$method][$uri]);
+            return new Route($method, $uri, $this->routes[$method][$uri]);
         }
-        return $route;
+        return new Route($method, $uri, EmptyView::class);
     }
 }
