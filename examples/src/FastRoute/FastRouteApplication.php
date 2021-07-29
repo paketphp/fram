@@ -12,6 +12,7 @@ use Paket\Fram\Fram;
 use Paket\Fram\Router\FastRouteRouter;
 use Paket\Fram\Router\Route;
 use Paket\Fram\ViewHandler\HtmlViewHandler;
+use Paket\Fram\ViewHandler\SimpleViewHandler;
 use Throwable;
 use function FastRoute\simpleDispatcher;
 
@@ -20,11 +21,14 @@ final class FastRouteApplication
     public function run(): void
     {
         $router = new FastRouteRouter(simpleDispatcher(function (RouteCollector $r) {
-            $r->addGroup('/fastroute', function (RouteCollector $r) {
-                $r->addRoute('GET', '/', IndexView::class);
-            });
+            $r->addRoute('GET', IndexView::PATH, IndexView::class);
+            $r->addRoute('GET', NewNoteView::PATH, NewNoteView::class);
+            $r->addRoute('GET', EditNoteView::PATH, EditNoteView::class);
+            $r->addRoute('POST', NewNoteBackend::PATH, NewNoteBackend::class);
+            $r->addRoute('POST', EditNoteBackend::PATH, EditNoteBackend::class);
+            $r->addRoute('POST', DeleteNoteBackend::PATH, DeleteNoteBackend::class);
         }));
-        $fram = new Fram(new BeroContainer(new StrictBero()), $router, new HtmlViewHandler());
+        $fram = new Fram(new BeroContainer(new StrictBero()), $router, new HtmlViewHandler(), new SimpleViewHandler());
 
         $fram->run(function (Route $route, ?Throwable $throwable) {
             if (isset($throwable)) {

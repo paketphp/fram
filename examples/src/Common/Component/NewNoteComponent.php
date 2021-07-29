@@ -5,7 +5,7 @@ namespace Paket\Fram\Examples\Common\Component;
 
 final class NewNoteComponent
 {
-    public function render(string $submit_path)
+    public function render(string $submit_path): void
     {
         ?>
         <form class="form-group" method="post" action="<?= $submit_path ?>">

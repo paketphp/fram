@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Paket\Fram\Examples\Simple;
+namespace Paket\Fram\Examples\FastRoute;
 
 use Paket\Fram\Examples\Common\Component\EditNoteComponent;
 use Paket\Fram\Examples\Common\Component\FootComponent;
@@ -14,7 +14,7 @@ use Paket\Fram\View\HtmlView;
 
 final class EditNoteView implements HtmlView
 {
-    public const PATH = '/simple/note/edit';
+    public const PATH = '/fastroute/note/{note_id}/edit';
 
     /** @var HeadComponent */
     private $head;
@@ -39,7 +39,8 @@ final class EditNoteView implements HtmlView
 
     public function render(Route $route)
     {
-        $note_id = filter_var($_GET['note_id'] ?? false, FILTER_VALIDATE_INT);
+        $payload = $route->getPayload();
+        $note_id = filter_var($payload[2]['note_id'] ?? false, FILTER_VALIDATE_INT);
         if ($note_id === false) {
             return $route->withViewClass(View404::class);
         }
@@ -49,15 +50,15 @@ final class EditNoteView implements HtmlView
             return $route->withViewClass(View404::class);
         }
 
-        $this->head->render('Simple Notes');
+        $this->head->render('FastRoute Notes');
         ?>
         <div class="container">
             <h1>Edit note</h1>
             <?php $this->editNote->render($note, function (Note $note) {
-                return EditNoteBackend::PATH;
+                return strtr(EditNoteBackend::PATH, ['{note_id}' => $note->note_id]);
             }, function (Note $note) {
-                return DeleteNoteBackend::PATH;
-            }, true); ?>
+                return strtr(DeleteNoteBackend::PATH, ['{note_id}' => $note->note_id]);
+            }, false); ?>
         </div>
         <?php
         $this->foot->render();

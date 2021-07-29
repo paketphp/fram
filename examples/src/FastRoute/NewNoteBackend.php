@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Paket\Fram\Examples\Simple;
+namespace Paket\Fram\Examples\FastRoute;
 
 use Paket\Fram\Examples\Common\Note\NoteRepository;
 use Paket\Fram\Examples\Common\Util\Redirect;
@@ -11,7 +11,7 @@ use Paket\Fram\View\SimpleView;
 
 final class NewNoteBackend implements SimpleView
 {
-    public const PATH = '/simple/note/new';
+    public const PATH = '/fastroute/note';
 
     public function render(Route $route)
     {
