@@ -11,4 +11,6 @@ final class Note
     public $title;
     /** @var string */
     public $text;
+    /** @var string */
+    public $created_at;
 }

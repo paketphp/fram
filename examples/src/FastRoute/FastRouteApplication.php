@@ -12,9 +12,10 @@ use Paket\Fram\Fram;
 use Paket\Fram\Router\FastRouteRouter;
 use Paket\Fram\Router\Route;
 use Paket\Fram\ViewHandler\HtmlViewHandler;
+use Throwable;
 use function FastRoute\simpleDispatcher;
 
-class FastRouteApplication
+final class FastRouteApplication
 {
     public function run(): void
     {

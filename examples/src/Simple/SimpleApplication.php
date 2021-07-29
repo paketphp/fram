@@ -23,9 +23,12 @@ final class SimpleApplication
                 'GET' => [
                     IndexView::PATH => IndexView::class,
                     NewNoteView::PATH => NewNoteView::class,
+                    EditNoteView::PATH => EditNoteView::class,
                 ],
                 'POST' => [
                     NewNoteBackend::PATH => NewNoteBackend::class,
+                    EditNoteBackend::PATH => EditNoteBackend::class,
+                    DeleteNoteBackend::PATH => DeleteNoteBackend::class,
                 ]
             ]);
         $fram = new Fram(new BeroContainer(new StrictBero()), $router, new SimpleViewHandler(), new HtmlViewHandler());

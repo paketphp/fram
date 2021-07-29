@@ -5,8 +5,8 @@ namespace Paket\Fram\Examples\Simple;
 
 use Paket\Fram\Examples\Common\Component\FootComponent;
 use Paket\Fram\Examples\Common\Component\HeadComponent;
+use Paket\Fram\Examples\Common\Component\NoteListComponent;
 use Paket\Fram\Examples\Common\Note\NoteRepository;
-use Paket\Fram\Util\Escape;
 use Paket\Fram\Router\Route;
 use Paket\Fram\View\HtmlView;
 
@@ -17,11 +17,14 @@ final class IndexView implements HtmlView
     private $head;
     /** @var FootComponent */
     private $foot;
+    /** @var NoteListComponent */
+    private $noteList;
 
-    public function __construct()
+    public function __construct(HeadComponent $head, FootComponent $foot, NoteListComponent $noteList)
     {
-        $this->head = new HeadComponent();
-        $this->foot = new FootComponent();
+        $this->head = $head;
+        $this->foot = $foot;
+        $this->noteList = $noteList;
     }
 
     public function render(Route $route)
@@ -32,14 +35,7 @@ final class IndexView implements HtmlView
         <div class="container">
             <h1>Simple Notes</h1>
             <a href="<?= NewNoteView::PATH ?>">New note</a>
-            <ul class="list-group-flush">
-                <?php foreach ($notesRepository->getAllNotes() as $note) : ?>
-                    <li class="list-group-item">
-                        <h2><?= Escape::html($note->title) ?></h2>
-                        <p><?= Escape::html($note->text) ?></p>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
+            <?php $this->noteList->render($notesRepository->getAllNotes()); ?>
         </div>
         <?php
         $this->foot->render();

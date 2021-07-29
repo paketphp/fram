@@ -5,7 +5,7 @@ namespace Paket\Fram\Examples\Common\Component;
 
 final class FootComponent
 {
-    public function render()
+    public function render(): void
     {
         ?>
         </body>
