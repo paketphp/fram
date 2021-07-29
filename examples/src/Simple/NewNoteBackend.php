@@ -5,7 +5,7 @@ namespace Paket\Fram\Examples\Simple;
 
 use Paket\Fram\Examples\Common\Note\NoteRepository;
 use Paket\Fram\Examples\Common\Util\Redirect;
-use Paket\Fram\Examples\Common\View\View404;
+use Paket\Fram\Examples\Common\View\ErrorView;
 use Paket\Fram\Router\Route;
 use Paket\Fram\View\SimpleView;
 
@@ -13,20 +13,27 @@ final class NewNoteBackend implements SimpleView
 {
     public const PATH = '/simple/note/new';
 
+    /** @var NoteRepository */
+    private $noteRepository;
+
+    public function __construct(NoteRepository $noteRepository)
+    {
+        $this->noteRepository = $noteRepository;
+    }
+
     public function render(Route $route)
     {
         $title = $_POST['title'] ?? '';
         if (empty($title)) {
-            return $route->withViewClass(View404::class);
+            return $route->withViewClass(ErrorView::class, [400, 'Missing title']);
         }
 
         $text = $_POST['text'] ?? '';
         if (empty($text)) {
-            return $route->withViewClass(View404::class);
+            return $route->withViewClass(ErrorView::class, [400, 'Missing text']);
         }
 
-        $noteRepository = new NoteRepository();
-        $noteRepository->insertNote($title, $text);
+        $this->noteRepository->insertNote($title, $text);
         Redirect::reply(IndexView::PATH);
     }
 }

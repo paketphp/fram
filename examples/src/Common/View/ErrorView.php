@@ -8,9 +8,8 @@ use Paket\Fram\Examples\Common\Component\HeadComponent;
 use Paket\Fram\Router\Route;
 use Paket\Fram\Util\Escape;
 use Paket\Fram\View\HtmlView;
-use Throwable;
 
-class View500 implements HtmlView
+final class ErrorView implements HtmlView
 {
     /** @var HeadComponent */
     private $head;
@@ -25,9 +24,11 @@ class View500 implements HtmlView
 
     public function render(Route $route)
     {
-        $status = 500;
-        $message = $route->getPayload() instanceof Throwable ? $route->getPayload()->getMessage() : '';
+        [$status, $message] = $route->getPayload();
+        $status = is_int($status) ? $status : 400;
+        $message = is_string($message) ? $message : 'Something went wrong';
         $title = "{$status} - Error";
+
         http_response_code($status);
         $this->head->render($title);
         ?>

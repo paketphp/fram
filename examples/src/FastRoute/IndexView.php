@@ -44,7 +44,7 @@ final class IndexView implements HtmlView
             <h1>FastRoute Notes</h1>
             <a href="<?= NewNoteView::PATH ?>">New note</a>
             <?php $this->noteList->render($this->noteRepository->getAllNotes(), function (Note $note) {
-                return strtr(EditNoteView::PATH , ['{note_id}' => $note->note_id]);
+                return strtr(EditNoteView::PATH, ['{note_id}' => $note->note_id]);
             }); ?>
         </div>
         <?php
