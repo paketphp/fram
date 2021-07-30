@@ -8,7 +8,7 @@
         <a href="/simple/">Simple</a>
     </li>
     <li>
-        <a href="/fastroute/">FastRoute</a>
+        <a href="/fast/">Fast</a>
     </li>
 </ul>
 </body>

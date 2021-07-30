@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Paket\Fram\Examples\FastRoute;
+namespace Paket\Fram\Examples\Fast;
 
 use FastRoute\RouteCollector;
 use Paket\Bero\Container\BeroContainer;
@@ -9,18 +9,18 @@ use Paket\Bero\StrictBero;
 use Paket\Fram\Examples\Common\View\View404;
 use Paket\Fram\Examples\Common\View\View500;
 use Paket\Fram\Fram;
-use Paket\Fram\Router\FastRouteRouter;
+use Paket\Fram\Router\FastRouter;
 use Paket\Fram\Router\Route;
 use Paket\Fram\ViewHandler\HtmlViewHandler;
 use Paket\Fram\ViewHandler\SimpleViewHandler;
 use Throwable;
 use function FastRoute\simpleDispatcher;
 
-final class FastRouteApplication
+final class FastApplication
 {
     public function run(): void
     {
-        $router = new FastRouteRouter(simpleDispatcher(function (RouteCollector $r) {
+        $router = new FastRouter(simpleDispatcher(function (RouteCollector $r) {
             $r->addRoute('GET', IndexView::PATH, IndexView::class);
             $r->addRoute('GET', NewNoteView::PATH, NewNoteView::class);
             $r->addRoute('GET', EditNoteView::PATH, EditNoteView::class);

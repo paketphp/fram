@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Paket\Fram\Examples\FastRoute;
+namespace Paket\Fram\Examples\Fast;
 
 use Paket\Fram\Examples\Common\Note\NoteRepository;
 use Paket\Fram\Examples\Common\Util\Redirect;
@@ -11,7 +11,7 @@ use Paket\Fram\View\SimpleView;
 
 final class EditNoteBackend implements SimpleView
 {
-    public const PATH = '/fastroute/note/{note_id}/edit';
+    public const PATH = '/fast/note/{note_id}/edit';
 
     /** @var NoteRepository */
     private $noteRepository;

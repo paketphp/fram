@@ -9,14 +9,14 @@ use Paket\Fram\View\EmptyView;
 use PHPUnit\Framework\TestCase;
 use function FastRoute\simpleDispatcher;
 
-final class FastRouteRouterTest extends TestCase
+final class FastRouterTest extends TestCase
 {
-    /** @var FastRouteRouter */
+    /** @var FastRouter */
     private $router;
 
     protected function setUp(): void
     {
-        $this->router = new FastRouteRouter(simpleDispatcher(function (RouteCollector $r) {
+        $this->router = new FastRouter(simpleDispatcher(function (RouteCollector $r) {
             $r->addRoute('GET', '/get', TestView::class);
         }));
     }

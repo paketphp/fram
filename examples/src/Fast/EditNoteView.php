@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Paket\Fram\Examples\FastRoute;
+namespace Paket\Fram\Examples\Fast;
 
 use Paket\Fram\Examples\Common\Component\EditNoteComponent;
 use Paket\Fram\Examples\Common\Component\FootComponent;
@@ -15,7 +15,7 @@ use Paket\Fram\View\HtmlView;
 
 final class EditNoteView implements HtmlView
 {
-    public const PATH = '/fastroute/note/{note_id}/edit';
+    public const PATH = '/fast/note/{note_id}/edit';
 
     /** @var HeadComponent */
     private $head;
@@ -51,7 +51,7 @@ final class EditNoteView implements HtmlView
             return $route->withViewClass(View404::class);
         }
 
-        $this->head->render('FastRoute Notes');
+        $this->head->render('Fast Notes');
         ?>
         <div class="container">
             <h1>Edit note</h1>

@@ -6,7 +6,7 @@ namespace Paket\Fram\Router;
 use FastRoute\Dispatcher;
 use Paket\Fram\View\EmptyView;
 
-class FastRouteRouter implements Router
+final class FastRouter implements Router
 {
     /** @var Dispatcher */
     private $dispatcher;

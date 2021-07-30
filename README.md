@@ -93,7 +93,7 @@ View handlers included in the framework
 Routers included in the framework
 
 * `SimpleRouter` - simple string matching against uri
-* `FastRouteRouter` - uses [FastRoute](https://github.com/nikic/FastRoute) for routing
+* `FastRouter` - uses [FastRoute](https://github.com/nikic/FastRoute) for routing
 
 
 ### Fram

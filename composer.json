@@ -15,7 +15,7 @@
   },
   "suggest": {
     "paket/bero": "For ContainerInterface",
-    "nikic/fast-route": "For FastRouteRouter"
+    "nikic/fast-route": "For FastRouter"
   },
   "autoload": {
     "psr-4": {
