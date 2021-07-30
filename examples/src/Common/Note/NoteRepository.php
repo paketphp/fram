@@ -4,32 +4,16 @@ declare(strict_types=1);
 namespace Paket\Fram\Examples\Common\Note;
 
 use Iterator;
-use PDO;
-use PDOStatement;
+use Paket\Fram\Examples\Common\Util\Database;
 
-class NoteRepository
+final class NoteRepository
 {
-    /** @var PDO */
-    private $pdo;
+    /** @var Database */
+    private $database;
 
-    public function __construct()
+    public function __construct(Database $database)
     {
-        $path = __DIR__ . '/../../../data/examples.db';
-        if (!is_dir(dirname($path))) {
-            mkdir(dirname($path));
-        }
-        $setup = false;
-        if (!is_file($path)) {
-            $setup = true;
-        }
-
-        $this->pdo = new PDO('sqlite:' . $path, null, null, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]);
-        if ($setup) {
-            $this->setup();
-        }
+        $this->database = $database;
     }
 
     /**
@@ -41,7 +25,7 @@ class NoteRepository
                 FROM note
                 ORDER BY created_at DESC";
 
-        $stmt = $this->execute($sql);
+        $stmt = $this->database->execute($sql);
         while ($row = $stmt->fetch()) {
             yield self::hydrateNote($row);
         }
@@ -53,7 +37,7 @@ class NoteRepository
                 FROM note
                 WHERE note_id = ?";
 
-        $stmt = $this->execute($sql, [$note_id]);
+        $stmt = $this->database->execute($sql, [$note_id]);
         $row = $stmt->fetch();
         if ($row === false) {
             return null;
@@ -64,7 +48,7 @@ class NoteRepository
     public function insertNote(string $title, string $text): void
     {
         $sql = "INSERT INTO note (title, text) VALUES (?, ?)";
-        $this->execute($sql, [$title, $text]);
+        $this->database->execute($sql, [$title, $text]);
     }
 
     public function updateNote(int $note_id, string $title, string $text): void
@@ -73,32 +57,13 @@ class NoteRepository
                 SET title = ?, text = ?
                 WHERE note_id = ?";
 
-        $this->execute($sql, [$title, $text, $note_id]);
+        $this->database->execute($sql, [$title, $text, $note_id]);
     }
 
     public function deleteNote(int $note_id): void
     {
         $sql = "DELETE FROM note WHERE note_id = ?";
-        $this->execute($sql, [$note_id]);
-    }
-
-    private function setup(): void
-    {
-        $sql = "CREATE TABLE note (
-                    note_id INTEGER,
-                    title TEXT NOT NULL,
-                    text TEXT NOT NULL,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                    PRIMARY KEY (note_id)
-                );";
-        $this->execute($sql);
-    }
-
-    private function execute(string $sql, array $params = []): PDOStatement
-    {
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
-        return $stmt;
+        $this->database->execute($sql, [$note_id]);
     }
 
     private static function hydrateNote(array $row): Note
