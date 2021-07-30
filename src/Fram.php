@@ -8,7 +8,6 @@ use Paket\Fram\Router\DefaultRoute;
 use Paket\Fram\Router\Route;
 use Paket\Fram\Router\Router;
 use Paket\Fram\View\EmptyView;
-use Paket\Fram\ViewHandler\ViewHandler;
 use Psr\Container\ContainerInterface;
 use Throwable;
 
@@ -18,14 +17,14 @@ final class Fram
     private $container;
     /** @var Router */
     private $router;
-    /** @var ViewHandler[] */
-    private $handlers;
+    /** @var string[] */
+    private $viewHandlerClasses;
 
-    public function __construct(ContainerInterface $container, Router $router, ViewHandler ...$handlers)
+    public function __construct(ContainerInterface $container, Router $router, string ...$viewHandlerClasses)
     {
         $this->container = $container;
         $this->router = $router;
-        $this->handlers = $handlers;
+        $this->viewHandlerClasses = $viewHandlerClasses;
     }
 
     public function run(callable $cb): void
@@ -74,10 +73,11 @@ final class Fram
         $viewClass = $route->getViewClass();
         $implements = class_implements($viewClass);
 
-        foreach ($this->handlers as $handler) {
-            if (in_array($handler->getViewTypeClass(), $implements, true)) {
+        foreach ($this->viewHandlerClasses as $viewHandlerClass) {
+            $viewHandler = $this->container->get($viewHandlerClass);
+            if (in_array($viewHandler->getViewTypeClass(), $implements, true)) {
                 $view = $this->container->get($viewClass);
-                return $handler->handle($route, $view);
+                return $viewHandler->handle($route, $view);
             }
         }
         throw new LogicException("No View handler found for {$viewClass}");

@@ -8,14 +8,13 @@ use Paket\Bero\Container\BeroContainer;
 use Paket\Bero\StrictBero;
 use Paket\Fram\Fixture\SecondTestView;
 use Paket\Fram\Fixture\TestView;
-use Paket\Fram\Fixture\TestViewType;
+use Paket\Fram\Fixture\TestViewHandler;
 use Paket\Fram\Fixture\ThirdTestView;
 use Paket\Fram\Router\DefaultRoute;
 use Paket\Fram\Router\Route;
 use Paket\Fram\Router\Router;
 use Paket\Fram\View\EmptyView;
 use Paket\Fram\View\View;
-use Paket\Fram\ViewHandler\ViewHandler;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
@@ -31,10 +30,15 @@ final class FramTest extends TestCase
         $this->container = new BeroContainer(new StrictBero());
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/get?foo=bar';
+        TestViewHandler::reset();
     }
 
     public function testThatRouterGetsCorrectMethodAndUri()
     {
+        TestViewHandler::set(function (Route $route, View $view) {
+            $this->fail();
+        });
+
         $fram = new Fram($this->container, self::getRouter(function (string $method, string $uri) {
             $expectedMethod = 'GET';
             $expectedUri = '/get';
@@ -48,20 +52,21 @@ final class FramTest extends TestCase
             $this->assertSame('GET11', $method);
             $this->assertSame('/ge1t', $uri);
             return new DefaultRoute($method, $uri, TestView::class);
-        }), self::getViewHandler(function (Route $route, View $view) {
-            $this->fail();
-        }));;
+        }), TestViewHandler::class);
+
         $fram->run(function (Route $route, ?Throwable $throwable) {
         });
     }
 
     public function testThatOnRouterMissRouteIsEmpty()
     {
+        TestViewHandler::set(function (Route $route, View $view) {
+            $this->fail();
+        });
+
         $fram = new Fram($this->container, self::getRouter(function (string $method, string $uri) {
             return new DefaultRoute($method, $uri, EmptyView::class);
-        }), self::getViewHandler(function (Route $route, View $view) {
-            $this->fail();
-        }));
+        }), TestViewHandler::class);
 
         $fram->run(function (Route $route, ?Throwable $throwable) {
             $this->assertTrue($route->hasEmptyView());
@@ -71,11 +76,13 @@ final class FramTest extends TestCase
 
     public function testThatOnRouterHitRouteHasAView()
     {
+        TestViewHandler::set(function (Route $route, View $view) {
+            $this->fail();
+        });
+
         $fram = new Fram($this->container, self::getRouter(function (string $method, string $uri) {
             return new DefaultRoute($method, $uri, TestView::class);
-        }), self::getViewHandler(function (Route $route, View $view) {
-            $this->fail();
-        }));
+        }), TestViewHandler::class);
 
         $fram->run(function (Route $route, ?Throwable $throwable) {
             $this->assertSame(TestView::class, $route->getViewClass());
@@ -86,12 +93,14 @@ final class FramTest extends TestCase
 
     public function testThatReturningRouteContinuesExecution()
     {
-        $fram = new Fram($this->container, self::getRouter(function (string $method, string $uri) {
-            return new DefaultRoute($method, $uri, TestView::class);
-        }), self::getViewHandler(function (Route $route, View $view) {
+        TestViewHandler::set(function (Route $route, View $view) {
             $this->assertTrue(true);
             return $route;
-        }));
+        });
+
+        $fram = new Fram($this->container, self::getRouter(function (string $method, string $uri) {
+            return new DefaultRoute($method, $uri, TestView::class);
+        }), TestViewHandler::class);
 
         $fram->run(function (Route $route, ?Throwable $throwable) {
             return $route;
@@ -100,9 +109,13 @@ final class FramTest extends TestCase
 
     public function testThatReturningEmptyViewThrowsLogicException()
     {
+        TestViewHandler::set(function (Route $route, View $view) {
+            $this->fail();
+        });
+
         $fram = new Fram($this->container, self::getRouter(function (string $method, string $uri) {
             return new DefaultRoute($method, $uri, EmptyView::class);
-        }));
+        }), TestViewHandler::class);
 
         $this->expectException(LogicException::class);
         $fram->run(function (Route $route, ?Throwable $throwable) {
@@ -125,11 +138,13 @@ final class FramTest extends TestCase
 
     public function testThatThrowingInRouterSetsThrowable()
     {
+        TestViewHandler::set(function (Route $route, View $view) {
+            $this->fail();
+        });
+
         $fram = new Fram($this->container, self::getRouter(function (string $method, string $uri) {
             throw new RuntimeException();
-        }), self::getViewHandler(function (Route $route) {
-            $this->fail();
-        }));
+        }), TestViewHandler::class);
 
         $fram->run(function (Route $route, ?Throwable $throwable) {
             $this->assertTrue($route->hasEmptyView());
@@ -151,11 +166,13 @@ final class FramTest extends TestCase
 
     public function testThatThrowingInViewSetsThrowable()
     {
+        TestViewHandler::set(function (Route $route, View $view) {
+            throw new RuntimeException();
+        });
+
         $fram = new Fram($this->container, self::getRouter(function (string $method, string $uri) {
             return new DefaultRoute($method, $uri, TestView::class);
-        }), self::getViewHandler(function (Route $route, View $view) {
-            throw new RuntimeException();
-        }));
+        }), TestViewHandler::class);
 
         $fram->run(function (Route $route, ?Throwable $throwable) {
             if (isset($throwable)) {
@@ -169,11 +186,13 @@ final class FramTest extends TestCase
 
     public function testThatThrowingLogicExceptionInViewThrows()
     {
+        TestViewHandler::set(function (Route $route, View $view) {
+            throw new LogicException();
+        });
+
         $fram = new Fram($this->container, self::getRouter(function (string $method, string $uri) {
             return new DefaultRoute($method, $uri, TestView::class);
-        }), self::getViewHandler(function (Route $route, View $view) {
-            throw new LogicException();
-        }));
+        }), TestViewHandler::class);
 
         $this->expectException(LogicException::class);
         $fram->run(function (Route $route, ?Throwable $throwable) {
@@ -183,11 +202,13 @@ final class FramTest extends TestCase
 
     public function testThatWhenViewThrowsKeepPreviousRoute()
     {
+        TestViewHandler::set(function (Route $route, View $view) {
+            throw new RuntimeException();
+        });
+
         $fram = new Fram($this->container, self::getRouter(function (string $method, string $uri) {
             return new DefaultRoute($method, $uri, EmptyView::class);
-        }), self::getViewHandler(function (Route $route, View $view) {
-            throw new RuntimeException();
-        }));
+        }), TestViewHandler::class);
 
         $fram->run(function (Route $route, ?Throwable $throwable) {
             static $newRoute;
@@ -202,14 +223,16 @@ final class FramTest extends TestCase
 
     public function testThatThrowableGetResetBetweenRuns()
     {
-        $fram = new Fram($this->container, self::getRouter(function (string $method, string $uri) {
-            return new DefaultRoute($method, $uri, EmptyView::class);
-        }), self::getViewHandler(function (Route $route, View $view) {
+        TestViewHandler::set(function (Route $route, View $view) {
             if ($route->getViewClass() === TestView::class) {
                 throw new RuntimeException();
             }
             return $route->withViewClass(ThirdTestView::class);
-        }));
+        });
+
+        $fram = new Fram($this->container, self::getRouter(function (string $method, string $uri) {
+            return new DefaultRoute($method, $uri, EmptyView::class);
+        }), TestViewHandler::class);
 
         $count = 0;
         $fram->run(function (Route $route, ?Throwable $throwable) use (&$count) {
@@ -237,11 +260,13 @@ final class FramTest extends TestCase
 
     public function testThatReturningNewRouteFromViewCallsCallable()
     {
+        TestViewHandler::set(function (Route $route, View $view) {
+            return $route->withViewClass(SecondTestView::class);
+        });
+
         $fram = new Fram($this->container, self::getRouter(function (string $method, string $uri) {
             return new DefaultRoute($method, $uri, TestView::class);
-        }), self::getViewHandler(function (Route $route, View $view) {
-            return $route->withViewClass(SecondTestView::class);
-        }));
+        }), TestViewHandler::class);
 
         $count = 0;
         $fram->run(function (Route $route, ?Throwable $throwable) use (&$count) {
@@ -264,11 +289,13 @@ final class FramTest extends TestCase
 
     public function testThatThrowingInCallableDoesBubble()
     {
+        TestViewHandler::set(function (Route $route, View $view) {
+            return $route;
+        });
+
         $fram = new Fram($this->container, self::getRouter(function (string $method, string $uri) {
             return new DefaultRoute($method, $uri, EmptyView::class);
-        }), self::getViewHandler(function (Route $route, View $view) {
-            return $route;
-        }));
+        }), TestViewHandler::class);
 
         $this->expectException(RuntimeException::class);
         $fram->run(function (Route $route, ?Throwable $throwable) {
@@ -292,31 +319,6 @@ final class FramTest extends TestCase
             {
                 $callable = $this->callable;
                 return $callable($method, $uri);
-            }
-        };
-    }
-
-    private static function getViewHandler(callable $callable): ViewHandler
-    {
-        return new class($callable) implements ViewHandler {
-
-            /** @var callable */
-            private $callable;
-
-            public function __construct(callable $callable)
-            {
-                $this->callable = $callable;
-            }
-
-            public function handle(Route $route, View $view): Route
-            {
-                $callable = $this->callable;
-                return $callable($route, $view);
-            }
-
-            public function getViewTypeClass(): string
-            {
-                return TestViewType::class;
             }
         };
     }

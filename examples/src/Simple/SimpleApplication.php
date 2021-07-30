@@ -31,7 +31,7 @@ final class SimpleApplication
                     DeleteNoteBackend::PATH => DeleteNoteBackend::class,
                 ]
             ]);
-        $fram = new Fram(new BeroContainer(new StrictBero()), $router, new DefaultViewHandler(), new HtmlViewHandler());
+        $fram = new Fram(new BeroContainer(new StrictBero()), $router, DefaultViewHandler::class, HtmlViewHandler::class);
 
         $fram->run(function (Route $route, ?Throwable $throwable) {
             if (isset($throwable)) {

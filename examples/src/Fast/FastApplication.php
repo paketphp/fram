@@ -28,7 +28,7 @@ final class FastApplication
             $r->addRoute('POST', EditNoteBackend::PATH, EditNoteBackend::class);
             $r->addRoute('POST', DeleteNoteBackend::PATH, DeleteNoteBackend::class);
         }));
-        $fram = new Fram(new BeroContainer(new StrictBero()), $router, new HtmlViewHandler(), new DefaultViewHandler());
+        $fram = new Fram(new BeroContainer(new StrictBero()), $router, HtmlViewHandler::class, DefaultViewHandler::class);
 
         $fram->run(function (Route $route, ?Throwable $throwable) {
             if (isset($throwable)) {
