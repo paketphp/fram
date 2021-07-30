@@ -10,6 +10,7 @@ use Paket\Fram\Examples\Common\Note\Note;
 use Paket\Fram\Examples\Common\Note\NoteRepository;
 use Paket\Fram\Examples\Common\View\ErrorView;
 use Paket\Fram\Examples\Common\View\View404;
+use Paket\Fram\Router\FastRoute;
 use Paket\Fram\Router\Route;
 use Paket\Fram\View\HtmlView;
 
@@ -40,8 +41,8 @@ final class EditNoteView implements HtmlView
 
     public function render(Route $route)
     {
-        $payload = $route->getPayload();
-        $note_id = filter_var($payload[2]['note_id'] ?? false, FILTER_VALIDATE_INT);
+        /** @var FastRoute $route */
+        $note_id = filter_var($route->getRouteVar('note_id'), FILTER_VALIDATE_INT);
         if ($note_id === false) {
             return $route->withViewClass(ErrorView::class, [400, 'Missing note_id']);
         }
