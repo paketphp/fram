@@ -20,8 +20,8 @@ final class FastRouter implements Router
     {
         $routeInfo = $this->dispatcher->dispatch($method, $uri);
         if ($routeInfo[0] === Dispatcher::FOUND) {
-            return new Route($method, $uri, $routeInfo[1], $routeInfo);
+            return new DefaultRoute($method, $uri, $routeInfo[1], $routeInfo);
         }
-        return new Route($method, $uri, EmptyView::class);
+        return new DefaultRoute($method, $uri, EmptyView::class);
     }
 }

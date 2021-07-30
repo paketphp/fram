@@ -1,75 +1,26 @@
 <?php
-declare(strict_types=1);
 
 namespace Paket\Fram\Router;
 
-use Paket\Fram\View\EmptyView;
-
-final class Route
+interface Route
 {
-    /** @var string */
-    private $method;
-    /** @var string */
-    private $uri;
-    /** @var string */
-    private $viewClass;
-    /** @var mixed */
-    private $payload;
-    /** @var Route[] */
-    private $pastRoutes = [];
+    public function getMethod(): string;
 
-    public function __construct(string $method, string $uri, string $viewClass, $payload = null)
-    {
-        $this->method = $method;
-        $this->uri = $uri;
-        $this->viewClass = $viewClass;
-        $this->payload = $payload;
-    }
+    public function getUri(): string;
 
-    public function getMethod(): string
-    {
-        return $this->method;
-    }
-
-    public function getUri(): string
-    {
-        return $this->uri;
-    }
-
-    public function getViewClass(): string
-    {
-        return $this->viewClass;
-    }
+    public function getViewClass(): string;
 
     /**
      * @return mixed
      */
-    public function getPayload()
-    {
-        return $this->payload;
-    }
+    public function getPayload();
 
-    public function hasEmptyView(): bool
-    {
-        return $this->viewClass === EmptyView::class;
-    }
+    public function hasEmptyView(): bool;
 
     /**
      * @return Route[]
      */
-    public function getPastRoutes(): array
-    {
-        return $this->pastRoutes;
-    }
+    public function getPastRoutes(): array;
 
-    public function withViewClass(string $viewClass, $payload = null): self
-    {
-        $route = clone $this;
-        $route->viewClass = $viewClass;
-        if (func_num_args() === 2) {
-            $route->payload = $payload;
-        }
-        $route->pastRoutes[] = $this;
-        return $route;
-    }
+    public function withViewClass(string $viewClass, $payload = null): Route;
 }

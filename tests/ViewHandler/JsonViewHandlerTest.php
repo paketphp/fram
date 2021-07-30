@@ -5,7 +5,7 @@ namespace Paket\Fram\ViewHandler;
 
 use Paket\Fram\Fixture\JsonTestView;
 use Paket\Fram\Fixture\TestView;
-use Paket\Fram\Router\Route;
+use Paket\Fram\Router\DefaultRoute;
 use Paket\Fram\View\JsonView;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +31,7 @@ final class JsonViewHandlerTest extends TestCase
         JsonTestView::set(function ($viewRoute) use (&$route) {
             $this->assertSame($route, $viewRoute);
         });
-        $route = new Route('GET', '/get', JsonTestView::class);
+        $route = new DefaultRoute('GET', '/get', JsonTestView::class);
 
         $this->viewHandler->handle($route, new JsonTestView());
     }
@@ -40,7 +40,7 @@ final class JsonViewHandlerTest extends TestCase
     {
         JsonTestView::set(function ($viewRoute) use (&$route) {
         });
-        $route = new Route('GET', '/get', JsonTestView::class);
+        $route = new DefaultRoute('GET', '/get', JsonTestView::class);
 
         $returnedRoute = $this->viewHandler->handle($route, new JsonTestView());
 
@@ -52,7 +52,7 @@ final class JsonViewHandlerTest extends TestCase
         JsonTestView::set(function ($viewRoute) {
             return $viewRoute->withViewClass(TestView::class);
         });
-        $route = new Route('GET', '/get', JsonTestView::class);
+        $route = new DefaultRoute('GET', '/get', JsonTestView::class);
 
         $returnedRoute = $this->viewHandler->handle($route, new JsonTestView());
 
@@ -64,7 +64,7 @@ final class JsonViewHandlerTest extends TestCase
     {
         JsonTestView::set(function ($viewRoute) use (&$route) {
         });
-        $route = new Route('GET', '/get', JsonTestView::class);
+        $route = new DefaultRoute('GET', '/get', JsonTestView::class);
 
         $this->viewHandler->handle($route, new JsonTestView());
         $this->assertSame('Content-Type: application/json', HeaderFunction::get());

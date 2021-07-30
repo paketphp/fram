@@ -5,7 +5,7 @@ namespace Paket\Fram\ViewHandler;
 
 use Paket\Fram\Fixture\HtmlTestView;
 use Paket\Fram\Fixture\TestView;
-use Paket\Fram\Router\Route;
+use Paket\Fram\Router\DefaultRoute;
 use Paket\Fram\View\HtmlView;
 use PHPUnit\Framework\TestCase;
 
@@ -31,7 +31,7 @@ final class HtmlViewHandlerTest extends TestCase
         HtmlTestView::set(function ($viewRoute) use (&$route) {
             $this->assertSame($route, $viewRoute);
         });
-        $route = new Route('GET', '/get', HtmlTestView::class);
+        $route = new DefaultRoute('GET', '/get', HtmlTestView::class);
 
         $this->viewHandler->handle($route, new HtmlTestView());
     }
@@ -40,7 +40,7 @@ final class HtmlViewHandlerTest extends TestCase
     {
         HtmlTestView::set(function ($viewRoute) use (&$route) {
         });
-        $route = new Route('GET', '/get', HtmlTestView::class);
+        $route = new DefaultRoute('GET', '/get', HtmlTestView::class);
 
         $returnedRoute = $this->viewHandler->handle($route, new HtmlTestView());
 
@@ -52,7 +52,7 @@ final class HtmlViewHandlerTest extends TestCase
         HtmlTestView::set(function ($viewRoute) {
             return $viewRoute->withViewClass(TestView::class);
         });
-        $route = new Route('GET', '/get', HtmlTestView::class);
+        $route = new DefaultRoute('GET', '/get', HtmlTestView::class);
 
         $returnedRoute = $this->viewHandler->handle($route, new HtmlTestView());
 
@@ -64,7 +64,7 @@ final class HtmlViewHandlerTest extends TestCase
     {
         HtmlTestView::set(function ($viewRoute) use (&$route) {
         });
-        $route = new Route('GET', '/get', HtmlTestView::class);
+        $route = new DefaultRoute('GET', '/get', HtmlTestView::class);
 
         $this->viewHandler->handle($route, new HtmlTestView());
 

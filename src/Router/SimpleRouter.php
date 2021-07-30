@@ -18,8 +18,8 @@ final class SimpleRouter implements Router
     public function route(string $method, string $uri): Route
     {
         if (isset($this->routes[$method], $this->routes[$method][$uri])) {
-            return new Route($method, $uri, $this->routes[$method][$uri]);
+            return new DefaultRoute($method, $uri, $this->routes[$method][$uri]);
         }
-        return new Route($method, $uri, EmptyView::class);
+        return new DefaultRoute($method, $uri, EmptyView::class);
     }
 }

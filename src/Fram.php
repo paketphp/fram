@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Paket\Fram;
 
 use LogicException;
+use Paket\Fram\Router\DefaultRoute;
 use Paket\Fram\Router\Route;
 use Paket\Fram\Router\Router;
 use Paket\Fram\View\EmptyView;
@@ -44,7 +45,7 @@ final class Fram
                 throw $t;
             }
             $throwable = $t;
-            $routerRoute = new Route($method, $uri, EmptyView::class);
+            $routerRoute = new DefaultRoute($method, $uri, EmptyView::class);
         }
 
         $cbRoute = null;

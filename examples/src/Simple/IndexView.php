@@ -25,10 +25,10 @@ final class IndexView implements HtmlView
     private $noteRepository;
 
     public function __construct(
-        HeadComponent $head,
-        FootComponent $foot,
+        HeadComponent     $head,
+        FootComponent     $foot,
         NoteListComponent $noteList,
-        NoteRepository $noteRepository)
+        NoteRepository    $noteRepository)
     {
         $this->head = $head;
         $this->foot = $foot;

@@ -9,11 +9,11 @@ use Paket\Fram\Fixture\ThirdTestView;
 use Paket\Fram\View\EmptyView;
 use PHPUnit\Framework\TestCase;
 
-final class RouteTest extends TestCase
+final class DefaultRouteTest extends TestCase
 {
     public function testThatCreateNewRouteHasCorrectMethodUriViewPayloadAnsHistory()
     {
-        $route = new Route('GET', '/get', TestView::class);
+        $route = new DefaultRoute('GET', '/get', TestView::class);
         $this->assertSame('GET', $route->getMethod());
         $this->assertSame('/get', $route->getUri());
         $this->assertEmpty($route->getPayload());
@@ -24,7 +24,7 @@ final class RouteTest extends TestCase
 
     public function testThatCreateNewRoutePlusPayloadHasCorrectMethodUriViewPayloadAnsHistory()
     {
-        $route = new Route('GET', '/get', TestView::class, 17);
+        $route = new DefaultRoute('GET', '/get', TestView::class, 17);
         $this->assertSame('GET', $route->getMethod());
         $this->assertSame('/get', $route->getUri());
         $this->assertSame(17, $route->getPayload());
@@ -35,14 +35,14 @@ final class RouteTest extends TestCase
 
     public function testThatCreateNewRouteWithEmptyViewHasEmptyView()
     {
-        $route = new Route('GET', '/get', EmptyView::class);
+        $route = new DefaultRoute('GET', '/get', EmptyView::class);
         $this->assertTrue($route->hasEmptyView());
     }
 
 
     public function testThatMakingNewRouteKeepsMethodAndUriTheSame()
     {
-        $route = new Route('GET', '/get', TestView::class);
+        $route = new DefaultRoute('GET', '/get', TestView::class);
         $newRoute = $route->withViewClass(SecondTestView::class);
         $this->assertSame($route->getMethod(), $newRoute->getMethod());
         $this->assertSame($route->getUri(), $newRoute->getUri());
@@ -50,21 +50,21 @@ final class RouteTest extends TestCase
 
     public function testThatMakingNewRouteMakesRouteNoLongerAnEmptyView()
     {
-        $route = new Route('GET', '/get', EmptyView::class);
+        $route = new DefaultRoute('GET', '/get', EmptyView::class);
         $newRoute = $route->withViewClass(TestView::class);
         $this->assertFalse($newRoute->hasEmptyView());
     }
 
     public function testThatAddingPayloadWithViewClassIsStored()
     {
-        $route = new Route('GET', '/get', TestView::class);
+        $route = new DefaultRoute('GET', '/get', TestView::class);
         $newRoute = $route->withViewClass(SecondTestView::class, 'payload');
         $this->assertSame('payload', $newRoute->getPayload());
     }
 
     public function testThatAddingNewPayloadWithViewClassOverwritesExistingPayload()
     {
-        $route = new Route('GET', '/get', TestView::class);
+        $route = new DefaultRoute('GET', '/get', TestView::class);
         $newRoute = $route->withViewClass(SecondTestView::class, 'payload');
         $newNewRoute = $newRoute->withViewClass(ThirdTestView::class, 'newPayload');
         $this->assertSame('newPayload', $newNewRoute->getPayload());
@@ -72,7 +72,7 @@ final class RouteTest extends TestCase
 
     public function testThatNotAddingPayloadWhenPayloadExistKeepsPayloadWithViewClass()
     {
-        $route = new Route('GET', '/get', TestView::class);
+        $route = new DefaultRoute('GET', '/get', TestView::class);
         $newRoute = $route->withViewClass(SecondTestView::class, 'payload');
         $newNewRoute = $newRoute->withViewClass(ThirdTestView::class);
         $this->assertSame('payload', $newNewRoute->getPayload());
@@ -80,7 +80,7 @@ final class RouteTest extends TestCase
 
     public function testThatMakingNewRouteStoresPreviousRoutes()
     {
-        $route = new Route('GET', '/get', TestView::class);
+        $route = new DefaultRoute('GET', '/get', TestView::class);
         $newRoute = $route->withViewClass(SecondTestView::class);
         $newNewRoute = $newRoute->withViewClass(ThirdTestView::class);
 
