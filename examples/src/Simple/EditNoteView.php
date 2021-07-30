@@ -9,7 +9,7 @@ use Paket\Fram\Examples\Common\Component\HeadComponent;
 use Paket\Fram\Examples\Common\Note\Note;
 use Paket\Fram\Examples\Common\Note\NoteRepository;
 use Paket\Fram\Examples\Common\View\ErrorView;
-use Paket\Fram\Examples\Common\View\View404;
+use Paket\Fram\Examples\Common\View\NotFoundView;
 use Paket\Fram\Router\Route;
 use Paket\Fram\View\HtmlView;
 
@@ -47,7 +47,7 @@ final class EditNoteView implements HtmlView
 
         $note = $this->noteRepository->getNoteById($note_id);
         if ($note === null) {
-            return $route->withViewClass(View404::class);
+            return $route->withViewClass(NotFoundView::class);
         }
 
         $this->head->render('Simple Notes');

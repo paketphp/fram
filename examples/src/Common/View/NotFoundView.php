@@ -8,7 +8,7 @@ use Paket\Fram\Examples\Common\Component\HeadComponent;
 use Paket\Fram\Router\Route;
 use Paket\Fram\View\HtmlView;
 
-final class View404 implements HtmlView
+final class NotFoundView implements HtmlView
 {
     /** @var HeadComponent */
     private $head;

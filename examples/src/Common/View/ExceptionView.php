@@ -10,7 +10,7 @@ use Paket\Fram\Util\Escape;
 use Paket\Fram\View\HtmlView;
 use Throwable;
 
-class View500 implements HtmlView
+class ExceptionView implements HtmlView
 {
     /** @var HeadComponent */
     private $head;
