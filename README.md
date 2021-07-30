@@ -13,6 +13,8 @@ Fram's design is based around a few core interfaces, Fram ships with a few imple
 
 `composer require paket/fram`
 
+Requires PHP 7.2 or higher.
+
 ## Usage
 
 ```
