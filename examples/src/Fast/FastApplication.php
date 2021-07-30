@@ -12,7 +12,7 @@ use Paket\Fram\Fram;
 use Paket\Fram\Router\FastRouter;
 use Paket\Fram\Router\Route;
 use Paket\Fram\ViewHandler\HtmlViewHandler;
-use Paket\Fram\ViewHandler\SimpleViewHandler;
+use Paket\Fram\ViewHandler\DefaultViewHandler;
 use Throwable;
 use function FastRoute\simpleDispatcher;
 
@@ -28,7 +28,7 @@ final class FastApplication
             $r->addRoute('POST', EditNoteBackend::PATH, EditNoteBackend::class);
             $r->addRoute('POST', DeleteNoteBackend::PATH, DeleteNoteBackend::class);
         }));
-        $fram = new Fram(new BeroContainer(new StrictBero()), $router, new HtmlViewHandler(), new SimpleViewHandler());
+        $fram = new Fram(new BeroContainer(new StrictBero()), $router, new HtmlViewHandler(), new DefaultViewHandler());
 
         $fram->run(function (Route $route, ?Throwable $throwable) {
             if (isset($throwable)) {

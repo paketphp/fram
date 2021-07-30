@@ -11,7 +11,7 @@ use Paket\Fram\Fram;
 use Paket\Fram\Router\Route;
 use Paket\Fram\Router\SimpleRouter;
 use Paket\Fram\ViewHandler\HtmlViewHandler;
-use Paket\Fram\ViewHandler\SimpleViewHandler;
+use Paket\Fram\ViewHandler\DefaultViewHandler;
 use Throwable;
 
 final class SimpleApplication
@@ -31,7 +31,7 @@ final class SimpleApplication
                     DeleteNoteBackend::PATH => DeleteNoteBackend::class,
                 ]
             ]);
-        $fram = new Fram(new BeroContainer(new StrictBero()), $router, new SimpleViewHandler(), new HtmlViewHandler());
+        $fram = new Fram(new BeroContainer(new StrictBero()), $router, new DefaultViewHandler(), new HtmlViewHandler());
 
         $fram->run(function (Route $route, ?Throwable $throwable) {
             if (isset($throwable)) {

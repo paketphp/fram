@@ -8,9 +8,9 @@ use Paket\Fram\Examples\Common\Util\Redirect;
 use Paket\Fram\Examples\Common\View\ErrorView;
 use Paket\Fram\Router\FastRoute;
 use Paket\Fram\Router\Route;
-use Paket\Fram\View\SimpleView;
+use Paket\Fram\View\DefaultView;
 
-final class EditNoteBackend implements SimpleView
+final class EditNoteBackend implements DefaultView
 {
     public const PATH = '/fast/note/{note_id}/edit';
 

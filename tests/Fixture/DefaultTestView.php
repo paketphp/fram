@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace Paket\Fram\Fixture;
 
 use Paket\Fram\Router\Route;
-use Paket\Fram\View\SimpleView;
+use Paket\Fram\View\DefaultView;
 
-final class SimpleTestView implements SimpleView
+final class DefaultTestView implements DefaultView
 {
     private static $callable;
 

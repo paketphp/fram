@@ -7,9 +7,9 @@ use Paket\Fram\Examples\Common\Note\NoteRepository;
 use Paket\Fram\Examples\Common\Util\Redirect;
 use Paket\Fram\Examples\Common\View\ErrorView;
 use Paket\Fram\Router\Route;
-use Paket\Fram\View\SimpleView;
+use Paket\Fram\View\DefaultView;
 
-final class EditNoteBackend implements SimpleView
+final class EditNoteBackend implements DefaultView
 {
     public const PATH = '/simple/note/edit';
 

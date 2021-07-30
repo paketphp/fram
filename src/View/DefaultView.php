@@ -5,7 +5,7 @@ namespace Paket\Fram\View;
 
 use Paket\Fram\Router\Route;
 
-interface SimpleView extends View
+interface DefaultView extends View
 {
     /**
      * @param Route $route
