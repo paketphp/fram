@@ -6,11 +6,11 @@ namespace Paket\Fram\Examples\Fast;
 use Paket\Fram\Examples\Common\Note\NoteRepository;
 use Paket\Fram\Examples\Common\Util\Redirect;
 use Paket\Fram\Examples\Common\View\ErrorView;
+use Paket\Fram\Examples\Common\ViewHandler\FormBackend;
 use Paket\Fram\Router\FastRoute;
 use Paket\Fram\Router\Route;
-use Paket\Fram\View\DefaultView;
 
-final class DeleteNoteBackend implements DefaultView
+final class DeleteNoteBackend implements FormBackend
 {
     public const PATH = '/fast/note/{note_id}/delete';
 

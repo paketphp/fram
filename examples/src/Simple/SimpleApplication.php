@@ -5,13 +5,13 @@ namespace Paket\Fram\Examples\Simple;
 
 use Paket\Bero\Container\BeroContainer;
 use Paket\Bero\StrictBero;
-use Paket\Fram\Examples\Common\View\NotFoundView;
 use Paket\Fram\Examples\Common\View\ExceptionView;
+use Paket\Fram\Examples\Common\View\NotFoundView;
+use Paket\Fram\Examples\Common\ViewHandler\FormBackendHandler;
 use Paket\Fram\Fram;
 use Paket\Fram\Router\Route;
 use Paket\Fram\Router\SimpleRouter;
 use Paket\Fram\ViewHandler\HtmlViewHandler;
-use Paket\Fram\ViewHandler\DefaultViewHandler;
 use Throwable;
 
 final class SimpleApplication
@@ -31,7 +31,7 @@ final class SimpleApplication
                     DeleteNoteBackend::PATH => DeleteNoteBackend::class,
                 ]
             ]);
-        $fram = new Fram(new BeroContainer(new StrictBero()), $router, DefaultViewHandler::class, HtmlViewHandler::class);
+        $fram = new Fram(new BeroContainer(new StrictBero()), $router, HtmlViewHandler::class, FormBackendHandler::class);
 
         $fram->run(function (Route $route, ?Throwable $throwable) {
             if (isset($throwable)) {

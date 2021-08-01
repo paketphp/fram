@@ -6,10 +6,10 @@ namespace Paket\Fram\Examples\Simple;
 use Paket\Fram\Examples\Common\Note\NoteRepository;
 use Paket\Fram\Examples\Common\Util\Redirect;
 use Paket\Fram\Examples\Common\View\ErrorView;
+use Paket\Fram\Examples\Common\ViewHandler\FormBackend;
 use Paket\Fram\Router\Route;
-use Paket\Fram\View\DefaultView;
 
-final class EditNoteBackend implements DefaultView
+final class EditNoteBackend implements FormBackend
 {
     public const PATH = '/simple/note/edit';
 

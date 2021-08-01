@@ -40,13 +40,25 @@ final class Database
 
     private function setup(): void
     {
-        $sql = "CREATE TABLE note (
+        $note = "CREATE TABLE note (
                     note_id INTEGER,
                     title TEXT NOT NULL,
                     text TEXT NOT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                     PRIMARY KEY (note_id)
                 );";
-        $this->execute($sql);
+
+        $setting = "CREATE TABLE setting (
+            key TEXT NOT NULL,
+            value TEXT NOT NULL,
+            PRIMARY KEY (key)
+        );";
+
+        $this->execute($note);
+        $this->execute($setting);
+
+        $secret = bin2hex(random_bytes(10));
+        $sql = "INSERT INTO setting (key, value) VALUES (?, ?)";
+        $this->execute($sql, ['secret', $secret]);
     }
 }

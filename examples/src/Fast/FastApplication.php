@@ -6,13 +6,13 @@ namespace Paket\Fram\Examples\Fast;
 use FastRoute\RouteCollector;
 use Paket\Bero\Container\BeroContainer;
 use Paket\Bero\StrictBero;
-use Paket\Fram\Examples\Common\View\NotFoundView;
 use Paket\Fram\Examples\Common\View\ExceptionView;
+use Paket\Fram\Examples\Common\View\NotFoundView;
+use Paket\Fram\Examples\Common\ViewHandler\FormBackendHandler;
 use Paket\Fram\Fram;
 use Paket\Fram\Router\FastRouter;
 use Paket\Fram\Router\Route;
 use Paket\Fram\ViewHandler\HtmlViewHandler;
-use Paket\Fram\ViewHandler\DefaultViewHandler;
 use Throwable;
 use function FastRoute\simpleDispatcher;
 
@@ -28,7 +28,7 @@ final class FastApplication
             $r->addRoute('POST', EditNoteBackend::PATH, EditNoteBackend::class);
             $r->addRoute('POST', DeleteNoteBackend::PATH, DeleteNoteBackend::class);
         }));
-        $fram = new Fram(new BeroContainer(new StrictBero()), $router, HtmlViewHandler::class, DefaultViewHandler::class);
+        $fram = new Fram(new BeroContainer(new StrictBero()), $router, HtmlViewHandler::class, FormBackendHandler::class);
 
         $fram->run(function (Route $route, ?Throwable $throwable) {
             if (isset($throwable)) {

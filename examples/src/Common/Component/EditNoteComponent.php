@@ -4,15 +4,25 @@ declare(strict_types=1);
 namespace Paket\Fram\Examples\Common\Component;
 
 use Paket\Fram\Examples\Common\Note\Note;
+use Paket\Fram\Examples\Common\Util\CsrfTokenService;
 use Paket\Fram\Util\Escape;
 
 final class EditNoteComponent
 {
+    /** @var CsrfTokenService */
+    private $csrfTokenService;
+
+    public function __construct(CsrfTokenService $csrfTokenService)
+    {
+        $this->csrfTokenService = $csrfTokenService;
+    }
+
     public function render(Note $note, callable $submit, callable $delete, bool $hidden_id): void
     {
         ?>
         <div class="form-group">
             <form method="post" action="<?= $submit($note) ?>">
+                <input type="hidden" name="token" value="<?= $this->csrfTokenService->generate() ?>">
                 <?php if ($hidden_id): ?>
                     <input type="hidden" name="note_id" value="<?= $note->note_id ?>">
                 <?php endif; ?>
@@ -29,6 +39,7 @@ final class EditNoteComponent
                 </div>
             </form>
             <form class="form-row" method="post" action="<?= $delete($note) ?>">
+                <input type="hidden" name="token" value="<?= $this->csrfTokenService->generate() ?>">
                 <input type="hidden" name="note_id" value="<?= $note->note_id ?>">
                 <button class="btn btn-danger" type="submit">Delete</button>
             </form>

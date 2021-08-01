@@ -140,3 +140,5 @@ Most customization should be done by implementing your own `ViewHandler`. The `V
   * No, the top `View` interface is an abstract interface and should never be implemented, the `View` interface is used as type to represent all view interfaces. You should implement a view interface that in turn extends the top `View` interface.
 * Can a view interface extend another view interface?
   * Only if the other interface is an abstract interface like the top `View` interface. Assume we have view interface `A` that extends the `View` interface, then `B` interface extends `A` interface. Both `A` and `B` has their own view handlers so view implementations of `A` and `B` can be rendered, however a view class of `B` can then match both the view handler that is registered for `A` and `B`, this can lead to unexpected results and Fram does not handle this case.
+* How to implement CSRF token validation?
+  * Implement a view handler that inspects all incoming forms and validate the token supplied in the form data. Look in the examples folder for a working example, specifically the `FormBackendHandler` class.
