@@ -18,20 +18,37 @@ Requires PHP 7.2 or higher.
 ## Usage
 
 ```
-$container = new BeroContainer(new StrictBero); // any PSR-11 ContainerInterface
-$router = new SimpleRouter(
-    ['GET' => [
-        '/' => IndexView::class
-    ]]);
-$fram = new Fram($container, $router, new HtmlViewHandler());
+final class HelloWorldView implements HtmlView
+{
+    public function render(Route $route)
+    {
+        ?>
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Hello, World!</title>
+        </head>
+        <body>
+        <h1>Hello, World!</h1>
+        </body>
+        </html>
+        <?php
+    }
+}
 
+$container = new BeroContainer(new StrictBero()); // any PSR-11 ContainerInterface
+$router = new FastRouter(simpleDispatcher(function (RouteCollector $r) {
+    $r->addRoute('GET', '/', HelloWorldView::class);
+}));
+
+$fram = new Fram($container, $router, HtmlViewHandler::class);
 $fram->run(function (Route $route, ?Throwable $throwable) {
     if (isset($throwable)) {
-        return $route->withViewClass(View500::class, $throwable);
+        return $route->withViewClass(ExceptionView::class, $throwable);
     }
 
     if ($route->hasEmptyView()) {
-        return $route->withViewClass(View404::class);
+        return $route->withViewClass(NotFoundView::class);
     }
     return $route;
 });
