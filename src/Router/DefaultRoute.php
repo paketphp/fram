@@ -26,42 +26,57 @@ final class DefaultRoute implements Route
         $this->payload = $payload;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getMethod(): string
     {
         return $this->method;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getUri(): string
     {
         return $this->uri;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getViewClass(): string
     {
         return $this->viewClass;
     }
 
     /**
-     * @return mixed
+     * @inheritdoc
      */
     public function getPayload()
     {
         return $this->payload;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function hasEmptyView(): bool
     {
         return $this->viewClass === EmptyView::class;
     }
 
     /**
-     * @return Route[]
+     * @inheritdoc
      */
     public function getPastRoutes(): array
     {
         return $this->pastRoutes;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function withViewClass(string $viewClass, $payload = null): Route
     {
         $route = clone $this;

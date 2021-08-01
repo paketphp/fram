@@ -16,6 +16,11 @@ final class FastRouter implements Router
         $this->dispatcher = $dispatcher;
     }
 
+    /**
+     * @param string $method
+     * @param string $uri
+     * @return FastRoute
+     */
     public function route(string $method, string $uri): Route
     {
         $routeInfo = $this->dispatcher->dispatch($method, $uri);

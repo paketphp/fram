@@ -15,6 +15,9 @@ final class SimpleRouter implements Router
         $this->routes = $routes;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function route(string $method, string $uri): Route
     {
         if (isset($this->routes[$method], $this->routes[$method][$uri])) {
