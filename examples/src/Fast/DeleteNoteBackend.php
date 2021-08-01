@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Paket\Fram\Examples\Fast;
 
+use Paket\Fram\Examples\Common\Note\Note;
 use Paket\Fram\Examples\Common\Note\NoteRepository;
 use Paket\Fram\Examples\Common\Util\Redirect;
 use Paket\Fram\Examples\Common\View\ErrorView;
@@ -12,7 +13,7 @@ use Paket\Fram\Router\Route;
 
 final class DeleteNoteBackend implements FormBackend
 {
-    public const PATH = '/fast/note/{note_id}/delete';
+    public const PATH = '/fast/notes/{note_id}/delete';
 
     /** @var NoteRepository */
     private $noteRepository;
@@ -20,6 +21,11 @@ final class DeleteNoteBackend implements FormBackend
     public function __construct(NoteRepository $noteRepository)
     {
         $this->noteRepository = $noteRepository;
+    }
+
+    public static function buildPath(Note $note): string
+    {
+        return strtr(self::PATH, ['{note_id}' => $note->note_id]);
     }
 
     public function render(Route $route)

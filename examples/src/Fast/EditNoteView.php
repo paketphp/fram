@@ -16,7 +16,7 @@ use Paket\Fram\View\HtmlView;
 
 final class EditNoteView implements HtmlView
 {
-    public const PATH = '/fast/note/{note_id}/edit';
+    public const PATH = '/fast/notes/{note_id}/edit';
 
     /** @var HeadComponent */
     private $head;
@@ -39,6 +39,11 @@ final class EditNoteView implements HtmlView
         $this->editNote = $editNote;
     }
 
+    public static function buildPath(Note $note): string
+    {
+        return strtr(self::PATH, ['{note_id}' => $note->note_id]);
+    }
+
     public function render(Route $route)
     {
         /** @var FastRoute $route */
@@ -56,11 +61,7 @@ final class EditNoteView implements HtmlView
         ?>
         <div class="container">
             <h1>Edit note</h1>
-            <?php $this->editNote->render($note, function (Note $note) {
-                return strtr(EditNoteBackend::PATH, ['{note_id}' => $note->note_id]);
-            }, function (Note $note) {
-                return strtr(DeleteNoteBackend::PATH, ['{note_id}' => $note->note_id]);
-            }, false); ?>
+            <?php $this->editNote->render($note, [EditNoteBackend::class, 'buildPath'], [DeleteNoteBackend::class, 'buildPath'], false); ?>
         </div>
         <?php
         $this->foot->render();

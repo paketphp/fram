@@ -6,7 +6,6 @@ namespace Paket\Fram\Examples\Fast;
 use Paket\Fram\Examples\Common\Component\FootComponent;
 use Paket\Fram\Examples\Common\Component\HeadComponent;
 use Paket\Fram\Examples\Common\Component\NoteListComponent;
-use Paket\Fram\Examples\Common\Note\Note;
 use Paket\Fram\Examples\Common\Note\NoteRepository;
 use Paket\Fram\Router\Route;
 use Paket\Fram\View\HtmlView;
@@ -43,9 +42,7 @@ final class IndexView implements HtmlView
         <div class="container">
             <h1>Fast Notes</h1>
             <a href="<?= NewNoteView::PATH ?>">New note</a>
-            <?php $this->noteList->render($this->noteRepository->getAllNotes(), function (Note $note) {
-                return strtr(EditNoteView::PATH, ['{note_id}' => $note->note_id]);
-            }); ?>
+            <?php $this->noteList->render($this->noteRepository->getAllNotes(), [EditNoteView::class, 'buildPath']); ?>
         </div>
         <?php
         $this->foot->render();

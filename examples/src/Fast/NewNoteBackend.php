@@ -11,7 +11,7 @@ use Paket\Fram\Router\Route;
 
 final class NewNoteBackend implements FormBackend
 {
-    public const PATH = '/fast/note';
+    public const PATH = '/fast/notes';
 
     /** @var NoteRepository */
     private $noteRepository;
