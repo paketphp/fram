@@ -183,3 +183,28 @@ Most customization should be done by implementing your own `ViewHandler`. The `V
         }
     }  
     ```
+* How to do request header based routing?
+  * Based on a request header, like `Accept` or a custom one like `X-Version` you could pick different routers by implementing a wrapper `Router`, e.g.
+    ```
+    final class RequestHeaderRouter implements Router
+    {
+        /** @var Router */
+        private $first;
+        /** @var Router */
+        private $second;
+    
+        public function __construct(Router $first, Router $second)
+        {
+            $this->first = $first;
+            $this->second = $second;
+        }
+    
+        public function route(string $method, string $uri): Route
+        {
+            if (/* check request header for condition to be true */) {
+                return $this->first->route($method, $uri);
+            }
+            return $this->second->route($method, $uri);
+        }
+    }
+    ```
