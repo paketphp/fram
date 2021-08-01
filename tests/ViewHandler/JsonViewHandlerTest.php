@@ -23,7 +23,7 @@ final class JsonViewHandlerTest extends TestCase
 
     public function testThatGetViewClassReturnsCorrectViewClass()
     {
-        $this->assertSame(JsonView::class, $this->viewHandler->getViewTypeClass());
+        $this->assertSame(JsonView::class, $this->viewHandler->getViewInterface());
     }
 
     public function testHandleRendersViewWithCorrectRoute()

@@ -27,7 +27,7 @@ final class TestViewHandler implements ViewHandler
         return $callable($route, $view);
     }
 
-    public function getViewTypeClass(): string
+    public function getViewInterface(): string
     {
         return TestViewType::class;
     }

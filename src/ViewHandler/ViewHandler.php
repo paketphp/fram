@@ -19,9 +19,9 @@ interface ViewHandler
     public function handle(Route $route, View $view): Route;
 
     /**
-     * Which View type this ViewHandler can handle
+     * Which View interface this ViewHandler can handle
      *
      * @return string
      */
-    public function getViewTypeClass(): string;
+    public function getViewInterface(): string;
 }

@@ -23,7 +23,7 @@ final class HtmlViewHandlerTest extends TestCase
 
     public function testThatGetViewClassReturnsCorrectViewClass()
     {
-        $this->assertSame(HtmlView::class, $this->viewHandler->getViewTypeClass());
+        $this->assertSame(HtmlView::class, $this->viewHandler->getViewInterface());
     }
 
     public function testHandleRendersViewWithCorrectRoute()

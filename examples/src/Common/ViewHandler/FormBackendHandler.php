@@ -29,7 +29,7 @@ final class FormBackendHandler implements ViewHandler
         return $newRoute !== null ? $newRoute : $route;
     }
 
-    public function getViewTypeClass(): string
+    public function getViewInterface(): string
     {
         return FormBackend::class;
     }

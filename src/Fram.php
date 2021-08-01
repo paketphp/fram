@@ -8,6 +8,7 @@ use Paket\Fram\Router\DefaultRoute;
 use Paket\Fram\Router\Route;
 use Paket\Fram\Router\Router;
 use Paket\Fram\View\EmptyView;
+use Paket\Fram\ViewHandler\ViewHandler;
 use Psr\Container\ContainerInterface;
 use Throwable;
 
@@ -74,8 +75,9 @@ final class Fram
         $implements = class_implements($viewClass);
 
         foreach ($this->viewHandlerClasses as $viewHandlerClass) {
+            /** @var ViewHandler $viewHandler */
             $viewHandler = $this->container->get($viewHandlerClass);
-            if (in_array($viewHandler->getViewTypeClass(), $implements, true)) {
+            if (in_array($viewHandler->getViewInterface(), $implements, true)) {
                 $view = $this->container->get($viewClass);
                 return $viewHandler->handle($route, $view);
             }

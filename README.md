@@ -177,7 +177,7 @@ Most customization should be done by implementing your own `ViewHandler`. The `V
             return $route;
         }
     
-        public function getViewTypeClass(): string
+        public function getViewInterface(): string
         {
             return HtmlView::class;
         }
